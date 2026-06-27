@@ -1,16 +1,16 @@
 // email.js
 // Serviço de e-mail usando Resend
 
-const RESEND_API_KEY = 're_sua-chave-aqui'; // ← COLE SUA CHAVE DO RESEND
+const RESEND_API_KEY = 're_JHn5Svxy_HXNfKLGZ9QDqnhsSrWdj3mnL'; // ← COLE SUA CHAVE DO RESEND
 
 // URL base da API do Resend
 const RESEND_API_URL = 'https://api.resend.com/emails';
 
 // E-mail que vai enviar (deve estar verificado no Resend)
-const FROM_EMAIL = 'noivos@seu-site.com'; // ← SEU E-MAIL VERIFICADO
+const FROM_EMAIL = 'samuelbcfaria@outlook.com'; // ← SEU E-MAIL VERIFICADO
 
 // E-mail que vai receber as notificações
-const TO_EMAIL = 'noivos123@gmail.com'; // ← ONDE VOCÊ QUER RECEBER
+const TO_EMAIL = 'samuelbcfaria@gmail.com'; // ← ONDE VOCÊ QUER RECEBER
 
 /**
  * Envia um e-mail via Resend
