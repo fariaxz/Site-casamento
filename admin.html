@@ -258,7 +258,7 @@ tr:hover td{background:rgba(199,164,108,.03);}
       </div>
       <div class="ce-block">
         <p class="ce-title">Versículo em destaque</p>
-        <label class="fl">Texto</label><textarea class="fi" id="ce-verse" rows="3" style="resize:none"></textarea>
+        <label class="fl">Texto</label><textarea class="fi" id="ce-verse" rows="3" style="resize:none;"></textarea>
         <label class="fl">Referência</label><input class="fi" type="text" id="ce-verse-ref">
         <div style="margin-top:1rem;"><button class="btn-sm" onclick="saveContent()">Salvar alterações</button></div>
       </div>
@@ -404,7 +404,6 @@ import { supabase, testConnection } from './supabase-client.js';
 import * as db from './db.js';
 
 console.log('🚀 Admin iniciando...');
-console.log('📦 Supabase client carregado');
 
 // ─── EXPORTA PARA USO GLOBAL ───
 window.db = db;
@@ -412,13 +411,21 @@ window.supabase = supabase;
 
 // ─── STATUS DO BANCO ───
 const statusEl = document.getElementById('db-status');
+
 async function checkDB() {
-  console.log('🔍 Verificando conexão com o banco...');
-  const ok = await testConnection();
-  console.log(`📊 Status da conexão: ${ok ? '✅ Conectado' : '❌ Offline'}`);
-  statusEl.textContent = ok ? '✅ Banco conectado' : '❌ Banco offline';
-  statusEl.style.color = ok ? '#4A7C59' : '#C62828';
-  return ok;
+  console.log('🔍 Verificando conexão...');
+  try {
+    const ok = await testConnection();
+    console.log('📊 Status:', ok ? '✅ Conectado' : '❌ Offline');
+    statusEl.textContent = ok ? '✅ Banco conectado' : '❌ Banco offline';
+    statusEl.style.color = ok ? '#4A7C59' : '#C62828';
+    return ok;
+  } catch (e) {
+    console.error('❌ Erro ao verificar:', e);
+    statusEl.textContent = '❌ Erro: ' + e.message;
+    statusEl.style.color = '#C62828';
+    return false;
+  }
 }
 
 // ─── AUTH ───
@@ -427,6 +434,7 @@ const ADMIN_PASS = '1234';
 
 async function checkSession() {
   const logged = sessionStorage.getItem('admin_logged');
+  console.log('🔐 Sessão:', logged ? 'Logado' : 'Deslogado');
   if (logged === 'true') {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('sb-email').textContent = ADMIN_EMAIL;
@@ -440,9 +448,10 @@ async function checkSession() {
   }
 }
 
-window.doLogin = async function() {
+window.doLogin = function() {
   const e = document.getElementById('l-email').value.trim();
   const p = document.getElementById('l-pass').value;
+  console.log('🔐 Tentando login...');
   if (e === ADMIN_EMAIL && p === ADMIN_PASS) {
     sessionStorage.setItem('admin_logged', 'true');
     document.getElementById('login-screen').style.display = 'none';
@@ -453,9 +462,10 @@ window.doLogin = async function() {
       month: 'long',
       year: 'numeric'
     });
-    await initAdmin();
+    initAdmin();
   } else {
     document.getElementById('l-err').style.display = 'block';
+    console.log('❌ Login falhou');
   }
 };
 
@@ -469,16 +479,21 @@ async function initAdmin() {
   console.log('🔄 Inicializando admin...');
   const ok = await checkDB();
   if (!ok) {
-    console.error('❌ Banco não conectado. Verifique suas credenciais.');
-    showToast('❌ Banco não conectado! Verifique suas credenciais.');
+    console.error('❌ Banco não conectado!');
+    showToast('❌ Banco não conectado!');
     return;
   }
   
   try {
+    console.log('📊 Renderizando dashboard...');
     await renderDashboard();
+    console.log('👥 Renderizando convidados...');
     await renderGuests();
+    console.log('🎁 Renderizando presentes...');
     await renderGifts();
+    console.log('💌 Renderizando mensagens...');
     await renderMessages();
+    console.log('✏️ Carregando conteúdo...');
     await loadContent();
     console.log('✅ Admin inicializado com sucesso!');
   } catch (e) {
@@ -489,81 +504,459 @@ async function initAdmin() {
 
 // ─── DASHBOARD ───
 async function renderDashboard() {
-  console.log('📊 Renderizando dashboard...');
   try {
     const familias = await db.getFamilias();
     const rsvps = await db.getRsvps();
     const gifts = await db.getFullGifts();
     const messages = await db.getMessages();
 
-    console.log(`📊 Dados carregados: ${familias.length} famílias, ${Object.keys(rsvps).length} RSVPs, ${gifts.length} presentes, ${messages.length} mensagens`);
+    console.log(`📊 Dados: ${familias.length} famílias, ${Object.keys(rsvps).length} RSVPs, ${gifts.length} presentes`);
 
-    // ... resto do código de renderização do dashboard (mesmo do original)
-    // O código é o mesmo, só adicionei os logs acima
+    let conf = 0, decl = 0, pend = 0, adults = 0, kids = 0;
+    familias.forEach(f => {
+      const r = rsvps[f.code];
+      if (!r) { pend++; return; }
+      if (r.status === 'CONFIRMED') { conf++; adults += r.adults || 0; kids += r.kids || 0; }
+      else decl++;
+    });
+
+    const totalNeeded = gifts.reduce((a, g) => a + g.needed, 0);
+    const totalReceived = gifts.reduce((a, g) => a + g.received, 0);
+    const totalMembers = familias.reduce((a, f) => a + (f.members || []).length, 0);
+
+    document.getElementById('dash-stats').innerHTML = [
+      { v: familias.length, l: 'Famílias', t: `${totalMembers} pessoas` },
+      { v: conf, l: 'Confirmadas', t: `↑ ${Math.round(conf/Math.max(familias.length,1)*100)}% resposta`, c: 'tr-up' },
+      { v: decl, l: 'Recusaram', t: `${Math.round(decl/Math.max(familias.length,1)*100)}% do total` },
+      { v: pend, l: 'Aguardando', t: `${Math.round(pend/Math.max(familias.length,1)*100)}% sem resp.` },
+      { v: adults, l: 'Adultos conf.', t: 'confirmados' },
+      { v: kids, l: 'Crianças conf.', t: 'confirmadas' },
+      { v: gifts.length, l: 'Itens na lista', t: `${totalNeeded} unidades` },
+      { v: totalReceived, l: 'Itens recebidos', t: `${Math.round(totalReceived/Math.max(totalNeeded,1)*100)}% da lista`, c: 'tr-up' },
+      { v: messages.length, l: 'Mensagens', t: 'no mural' },
+    ].map(s => `<div class="stat-card"><span class="stat-val">${s.v}</span><span class="stat-lbl">${s.l}</span><p class="stat-tr ${s.c||'tr-n'}">${s.t}</p></div>`).join('');
+
+    // RSVP TABLE
+    const rsvpRows = familias.filter(f => rsvps[f.code]).slice(0, 6).map(f => {
+      const r = rsvps[f.code];
+      const lbl = r.status === 'CONFIRMED' ? '<span class="pill pg">Confirmado</span>' : '<span class="pill pr">Recusou</span>';
+      const d = r.at ? new Date(r.at).toLocaleDateString('pt-BR') : '—';
+      return `<tr><td>${f.name}</td><td>${f.code}</td><td>${lbl}</td><td>${r.adults||0}</td><td>${r.kids||0}</td><td>${d}</td></tr>`;
+    }).join('') || '<tr><td colspan="6" style="text-align:center;color:#9A7B62;padding:1.5rem;">Nenhuma confirmação ainda.</td></tr>';
+    document.getElementById('dash-rsvp-tbody').innerHTML = rsvpRows;
+
+    // GIFTS TABLE
+    document.getElementById('dash-gifts-tbody').innerHTML = gifts.slice(0, 8).map(g => {
+      const pct = g.needed > 0 ? Math.round(g.received / g.needed * 100) : 0;
+      const st = g.received >= g.needed ? '<span class="pill pg">Completo</span>' : g.received > 0 ? '<span class="pill pgo">Parcial</span>' : '<span class="pill pp">Disponível</span>';
+      return `<tr><td>${g.name}</td><td>${g.category}</td><td><div style="display:flex;align-items:center;gap:.5rem;"><div class="pbar"><div class="pfill" style="width:${Math.min(pct,100)}%"></div></div><span style="font-size:.7rem;color:#9A7B62;">${g.received}/${g.needed}</span></div></td><td>${st}</td></tr>`;
+    }).join('') || '<tr><td colspan="4" style="text-align:center;color:#9A7B62;padding:1.5rem;">Nenhum presente cadastrado.</td></tr>';
     
+    console.log('✅ Dashboard renderizado!');
   } catch (e) {
     console.error('❌ Erro no dashboard:', e);
-    document.getElementById('dash-stats').innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:1rem;color:#C62828;">❌ Erro ao carregar: ${e.message}</div>`;
-    showToast('Erro ao carregar dashboard');
+    document.getElementById('dash-stats').innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:1rem;color:#C62828;">❌ Erro: ${e.message}</div>`;
   }
 }
 
 // ─── GUESTS ───
 async function renderGuests() {
-  console.log('👥 Renderizando convidados...');
   try {
     const familias = await db.getFamilias();
     const rsvps = await db.getRsvps();
-    // ... resto do código
+    const stMap = { CONFIRMED: '<span class="pill pg">Confirmado</span>', DECLINED: '<span class="pill pr">Recusou</span>' };
+    
+    document.getElementById('guests-tbody').innerHTML = familias.map((f) => {
+      const r = rsvps[f.code];
+      const st = r ? (stMap[r.status] || '') : '<span class="pill pp">Pendente</span>';
+      return `<tr>
+        <td><strong>${f.code}</strong></td>
+        <td>${f.name}</td>
+        <td style="font-size:.75rem;color:#9A7B62;max-width:180px;">${(f.members || []).join(', ')}</td>
+        <td>${st}</td>
+        <td>${r?.adults??'—'}</td><td>${r?.kids??'—'}</td>
+        <td style="font-size:.74rem;">${r?.dietary||'—'}</td>
+        <td style="display:flex;gap:.35rem;flex-wrap:wrap;">
+          <button class="btn-edit" onclick="editFamily('${f.code}')">✏ Editar</button>
+          <button class="btn-danger" onclick="deleteFamily('${f.code}')">✕</button>
+        </td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="8" style="text-align:center;color:#9A7B62;padding:1.5rem;">Nenhuma família cadastrada.</td></tr>';
+    
+    genNextCode();
+    console.log('✅ Convidados renderizados!');
   } catch (e) {
-    console.error('❌ Erro ao renderizar convidados:', e);
-    document.getElementById('guests-tbody').innerHTML = `<tr><td colspan="8" style="text-align:center;color:#C62828;padding:1.5rem;">❌ Erro ao carregar: ${e.message}</td></tr>`;
-    showToast('Erro ao carregar convidados');
+    console.error('❌ Erro em guests:', e);
+    document.getElementById('guests-tbody').innerHTML = `<tr><td colspan="8" style="text-align:center;color:#C62828;padding:1.5rem;">❌ Erro: ${e.message}</td></tr>`;
   }
 }
 
 // ─── GIFTS ───
 async function renderGifts() {
-  console.log('🎁 Renderizando presentes...');
   try {
     const gifts = await db.getFullGifts();
-    // ... resto do código
+    document.getElementById('gifts-tbody').innerHTML = gifts.map(g => {
+      const pct = g.needed > 0 ? Math.round(g.received / g.needed * 100) : 0;
+      const st = g.received >= g.needed ? '<span class="pill pg">Completo</span>' : g.received > 0 ? '<span class="pill pgo">Parcial</span>' : '<span class="pill pp">Disponível</span>';
+      return `<tr>
+        <td><strong>${g.emoji||'🎁'} ${g.name}</strong><br><span style="font-size:.72rem;color:#9A7B62;">${g.description||''}</span></td>
+        <td>${g.category}</td>
+        <td>
+          <div class="qty-row">
+            <button class="qty-btn" onclick="adjQty(${g.id},-1)">−</button>
+            <span class="qty-val" id="qty-${g.id}">${g.needed}</span>
+            <button class="qty-btn" onclick="adjQty(${g.id},+1)">+</button>
+          </div>
+        </td>
+        <td>
+          <div class="recv-adj">
+            <span style="font-family:\'Cormorant Garamond\',serif;font-size:1.1rem;color:var(--bd);" id="recv-${g.id}">${g.received}</span>
+            ${g.received > 0 ? `<button class="recv-dec" onclick="adjRecv(${g.id},-1)">− recebido</button>` : ''}
+          </div>
+        </td>
+        <td><div style="display:flex;align-items:center;gap:.5rem;"><div class="pbar"><div class="pfill" style="width:${Math.min(pct,100)}%"></div></div><span style="font-size:.7rem;color:#9A7B62;">${pct}%</span></div></td>
+        <td style="font-size:.72rem;color:#9A7B62;">${(g.stores || []).join(', ')}</td>
+        <td>${g.is_extra ? `<button class="btn-danger" onclick="deleteGift(${g.id})">✕</button>` : ''}</td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="7" style="text-align:center;color:#9A7B62;padding:1.5rem;">Nenhum presente cadastrado.</td></tr>';
+    console.log('✅ Presentes renderizados!');
   } catch (e) {
-    console.error('❌ Erro ao renderizar presentes:', e);
-    document.getElementById('gifts-tbody').innerHTML = `<tr><td colspan="7" style="text-align:center;color:#C62828;padding:1.5rem;">❌ Erro ao carregar: ${e.message}</td></tr>`;
-    showToast('Erro ao carregar presentes');
+    console.error('❌ Erro em gifts:', e);
+    document.getElementById('gifts-tbody').innerHTML = `<tr><td colspan="7" style="text-align:center;color:#C62828;padding:1.5rem;">❌ Erro: ${e.message}</td></tr>`;
   }
 }
 
 // ─── MESSAGES ───
 async function renderMessages() {
-  console.log('💌 Renderizando mensagens...');
   try {
     const msgs = await db.getMessages();
-    // ... resto do código
+    document.getElementById('msg-count').textContent = msgs.length + ' mensagem(ns)';
+    document.getElementById('msgs-container').innerHTML = msgs.length ? msgs.map((m) => `
+      <div class="msg-card">
+        <div>
+          <p class="msg-txt">"${m.text}"</p>
+          <p class="msg-auth">— ${m.author} · ${m.at ? new Date(m.at).toLocaleDateString('pt-BR') : ''}</p>
+        </div>
+        <button class="btn-danger" onclick="deleteMessage(${m.id})" title="Remover mensagem">✕</button>
+      </div>
+    `).join('') : '<p style="color:#9A7B62;font-size:.85rem;padding:1rem;">Nenhuma mensagem ainda.</p>';
+    console.log('✅ Mensagens renderizadas!');
   } catch (e) {
-    console.error('❌ Erro ao renderizar mensagens:', e);
-    document.getElementById('msgs-container').innerHTML = `<p style="color:#C62828;padding:1rem;">❌ Erro ao carregar: ${e.message}</p>`;
+    console.error('❌ Erro em messages:', e);
+    document.getElementById('msgs-container').innerHTML = `<p style="color:#C62828;padding:1rem;">❌ Erro: ${e.message}</p>`;
   }
 }
 
 // ─── CONTENT ───
 async function loadContent() {
-  console.log('✏️ Carregando conteúdo...');
   try {
     const content = await db.getSiteContent();
-    // ... resto do código
+    if (content.event_date) document.getElementById('ce-date').value = content.event_date;
+    if (content.event_time) document.getElementById('ce-time').value = content.event_time;
+    if (content.event_location) document.getElementById('ce-loc').value = content.event_location;
+    if (content.event_address) document.getElementById('ce-addr').value = content.event_address;
+    if (content.verse_text) document.getElementById('ce-verse').value = content.verse_text;
+    if (content.verse_ref) document.getElementById('ce-verse-ref').value = content.verse_ref;
+    console.log('✅ Conteúdo carregado!');
   } catch (e) {
-    console.error('❌ Erro ao carregar conteúdo:', e);
+    console.error('❌ Erro em content:', e);
   }
 }
 
-// ... (resto das funções do admin.html - mesmas do original)
+// ─── FUNÇÕES AUXILIARES ───
+async function genNextCode() {
+  try {
+    const familias = await db.getFamilias();
+    const max = familias.reduce((m, f) => Math.max(m, parseInt(f.code.replace('FAM', '')) || 0), 0);
+    const next = 'FAM' + String(max + 1).padStart(3, '0');
+    const el = document.getElementById('nf-code');
+    if (el) el.value = next;
+  } catch (e) {
+    document.getElementById('nf-code').value = 'FAM001';
+  }
+}
+
+window.addFamily = async function() {
+  const name = document.getElementById('nf-name').value.trim();
+  const code = document.getElementById('nf-code').value;
+  const raw = document.getElementById('nf-members').value.trim();
+  if (!name) { showToast('Informe o nome da família.'); return; }
+  try {
+    await db.addFamilia(code, name, raw.split('\n').filter(Boolean));
+    await renderGuests();
+    await renderDashboard();
+    closeModal('modal-add-family');
+    document.getElementById('nf-name').value = '';
+    document.getElementById('nf-members').value = '';
+    showToast('✓ Família ' + name + ' adicionada!');
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+  }
+};
+
+window.editFamily = async function(code) {
+  try {
+    const familias = await db.getFamilias();
+    const f = familias.find(f => f.code === code);
+    if (!f) return;
+    document.getElementById('ef-idx').value = code;
+    document.getElementById('ef-code').value = f.code;
+    document.getElementById('ef-name').value = f.name;
+    document.getElementById('ef-members').value = (f.members || []).join('\n');
+    openModal('modal-edit-family');
+  } catch (e) {
+    showToast('Erro ao carregar família');
+  }
+};
+
+window.saveEditFamily = async function() {
+  const code = document.getElementById('ef-idx').value;
+  const name = document.getElementById('ef-name').value.trim();
+  const raw = document.getElementById('ef-members').value.trim();
+  if (!name) { showToast('Informe o nome da família.'); return; }
+  try {
+    await db.updateFamilia(code, name, raw.split('\n').filter(Boolean));
+    await renderGuests();
+    await renderDashboard();
+    closeModal('modal-edit-family');
+    showToast('✓ Família atualizada!');
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+  }
+};
+
+window.deleteFamily = async function(code) {
+  if (!confirm('Remover esta família?')) return;
+  try {
+    await db.deleteFamilia(code);
+    await renderGuests();
+    await renderDashboard();
+    showToast('Família removida.');
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+  }
+};
+
+window.importCSV = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const lines = e.target.result.trim().split('\n').slice(1);
+      const familias = await db.getFamilias();
+      let added = 0;
+      for (const line of lines) {
+        const parts = line.split(',');
+        if (parts.length < 2) continue;
+        const code = parts[0].trim().toUpperCase();
+        const name = parts[1].trim();
+        const members = parts[2] ? parts[2].split(';').map(m => m.trim()).filter(Boolean) : [];
+        if (!familias.find(f => f.code === code)) {
+          await db.addFamilia(code, name, members);
+          added++;
+        }
+      }
+      await renderGuests();
+      await renderDashboard();
+      closeModal('modal-import');
+      showToast(`✓ ${added} famílias importadas!`);
+    } catch (err) {
+      showToast('Erro ao importar: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+};
+
+window.adjQty = async function(id, delta) {
+  try {
+    const gifts = await db.getFullGifts();
+    const g = gifts.find(g => g.id === id);
+    if (!g) return;
+    const nv = Math.max(0, g.needed + delta);
+    await db.updateGiftQty(id, nv);
+    const el = document.getElementById('qty-' + id);
+    if (el) el.textContent = nv;
+    flashSaved('gifts-saved');
+    await renderDashboard();
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+  }
+};
+
+window.adjRecv = async function(id, delta) {
+  try {
+    const gifts = await db.getFullGifts();
+    const g = gifts.find(g => g.id === id);
+    if (!g) return;
+    const nv = Math.max(0, g.received + delta);
+    await db.updateGiftReceived(id, nv);
+    await renderGifts();
+    await renderDashboard();
+    showToast('✓ Quantidade recebida atualizada.');
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+  }
+};
+
+window.addGift = async function() {
+  const name = document.getElementById('ng-name').value.trim();
+  const category = document.getElementById('ng-cat').value;
+  const emoji = document.getElementById('ng-emoji').value.trim() || '🎁';
+  const description = document.getElementById('ng-desc').value.trim();
+  const qty = parseInt(document.getElementById('ng-qty').value) || 1;
+  const stores = document.getElementById('ng-stores').value.split(',').map(x => x.trim()).filter(Boolean);
+  if (!name) { showToast('Informe o nome do item.'); return; }
+  try {
+    await db.addExtraGift(name, category, emoji, description, stores, qty);
+    await renderGifts();
+    await renderDashboard();
+    closeModal('modal-add-gift');
+    ['ng-name', 'ng-desc', 'ng-stores', 'ng-emoji'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('ng-qty').value = '1';
+    showToast('✓ ' + name + ' adicionado à lista!');
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+  }
+};
+
+window.deleteGift = async function(id) {
+  if (!confirm('Remover este item?')) return;
+  try {
+    await db.deleteGift(id);
+    await renderGifts();
+    await renderDashboard();
+    showToast('Item removido.');
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+  }
+};
+
+window.deleteMessage = async function(id) {
+  if (!confirm('Remover esta mensagem?')) return;
+  try {
+    await db.deleteMessage(id);
+    await renderMessages();
+    showToast('Mensagem removida.');
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+  }
+};
+
+window.saveContent = async function() {
+  try {
+    const updates = {
+      event_date: document.getElementById('ce-date').value,
+      event_time: document.getElementById('ce-time').value,
+      event_location: document.getElementById('ce-loc').value,
+      event_address: document.getElementById('ce-addr').value,
+      verse_text: document.getElementById('ce-verse').value,
+      verse_ref: document.getElementById('ce-verse-ref').value
+    };
+    for (const [key, value] of Object.entries(updates)) {
+      await db.updateSiteContent(key, value);
+    }
+    showToast('✓ Configurações salvas!');
+    flashSaved('content-saved');
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+  }
+};
+
+window.exportCSV = async function(type) {
+  try {
+    const familias = await db.getFamilias();
+    const rsvps = await db.getRsvps();
+    const gifts = await db.getFullGifts();
+    
+    let csv = '', filename = '';
+    if (type === 'guests') {
+      csv = 'Código,Família,Membros,Status,Adultos,Crianças,Restrições,Mensagem\n';
+      familias.forEach(f => {
+        const r = rsvps[f.code];
+        csv += `"${f.code}","${f.name}","${(f.members||[]).join('; ')}","${r?r.status:'PENDENTE'}",${r?.adults||0},${r?.kids||0},"${r?.dietary||''}","${r?.message||''}"\n`;
+      });
+      filename = 'convidados.csv';
+    } else if (type === 'rsvps') {
+      csv = 'Família,Código,Status,Adultos,Crianças,Restrições,Mensagem,Data\n';
+      familias.filter(f => rsvps[f.code]).forEach(f => {
+        const r = rsvps[f.code];
+        csv += `"${f.name}","${f.code}","${r.status}",${r.adults||0},${r.kids||0},"${r.dietary||''}","${r.message||''}","${r.at?new Date(r.at).toLocaleDateString('pt-BR'):''}"\n`;
+      });
+      filename = 'confirmacoes.csv';
+    } else if (type === 'gifts') {
+      csv = 'Item,Categoria,Qtd Pedida,Qtd Recebida,Lojas\n';
+      gifts.forEach(g => {
+        csv += `"${g.name}","${g.category}",${g.needed},${g.received},"${(g.stores||[]).join(', ')}"\n`;
+      });
+      filename = 'presentes.csv';
+    }
+    
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('✓ CSV exportado!');
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+  }
+};
+
+window.exportPrint = function(type) {
+  showToast('Função de impressão disponível no console');
+  console.log('Export print:', type);
+};
+
+// ─── NAVEGAÇÃO ───
+const pageTitles = { dashboard: 'Dashboard', guests: 'Convidados', gifts: 'Presentes', messages: 'Mensagens', content: 'Conteúdo', reports: 'Relatórios' };
+
+window.goPage = async function(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-it').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  document.getElementById('topbar-title').textContent = pageTitles[id] || id;
+  
+  try {
+    if (id === 'dashboard') await renderDashboard();
+    if (id === 'guests') await renderGuests();
+    if (id === 'gifts') await renderGifts();
+    if (id === 'messages') await renderMessages();
+  } catch (e) {
+    console.error('Page load error:', e);
+    showToast('Erro ao carregar página');
+  }
+};
+
+// ─── MODALS ───
+window.openModal = function(id) { document.getElementById(id).classList.add('open'); };
+window.closeModal = function(id) { document.getElementById(id).classList.remove('open'); };
+document.querySelectorAll('.mb').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }));
+
+// ─── TOAST ───
+let toastTimer;
+window.showToast = function(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+};
+
+window.flashSaved = function(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+};
 
 // ─── BOOT ───
 checkSession();
 
-console.log('✅ Admin iniciado!');
+console.log('✅ Admin carregado!');
 </script>
 </body>
 </html>
