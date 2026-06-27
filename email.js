@@ -10,7 +10,7 @@ const RESEND_API_URL = 'https://api.resend.com/emails';
 const FROM_EMAIL = 'delivered@resend.dev'; // ← SEU E-MAIL VERIFICADO
 
 // E-mail que vai receber as notificações
-const TO_EMAIL = 'samuelbcfaria@gmail.com'; // ← ONDE VOCÊ QUER RECEBER
+const TO_EMAIL = 'samuelbcfaria@outlook.com'; // ← ONDE VOCÊ QUER RECEBER
 
 /**
  * Envia um e-mail via Resend
