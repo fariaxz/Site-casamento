@@ -467,6 +467,7 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;position:relat
 <script type="module">
 import { supabase, testConnection } from './supabase-client.js';
 import * as db from './db.js';
+import { sendNotification } from './email.js';
 
 // ─── EXPORTA PARA USO GLOBAL ───
 window.db = db;
@@ -669,6 +670,18 @@ window.confirmPurchase = async function() {
     lastPurchasedId = activeGiftId;
     renderGifts(currentFilter);
     showStep(3);
+    
+    // 📧 ADICIONE ESTA PARTE - ENVIA E-MAIL
+    // Busca o presente atualizado
+    const updatedGifts = await db.getFullGifts();
+    const updatedGift = updatedGifts.find(x => x.id === activeGiftId);
+    if (updatedGift) {
+      try {
+        await sendNotification('gift', { gift: updatedGift });
+      } catch (e) {
+        console.warn('E-mail não enviado:', e);
+      }
+    }
   } catch (e) {
     alert('Erro ao confirmar compra: ' + e.message);
   }
@@ -754,21 +767,41 @@ window.submitRsvp = async function() {
   if (!selRsvpVal) { alert('Por favor, indique se poderá comparecer.'); return; }
   if (!currentFamilia) { alert('Família não identificada.'); return; }
   try {
+    // Pega os valores do formulário
+    const rsvpData = {
+      status: selRsvpVal,
+      adults: parseInt(document.getElementById('rsvp-adults').value) || 0,
+      kids: parseInt(document.getElementById('rsvp-kids').value) || 0,
+      dietary: document.getElementById('rsvp-diet').value,
+      message: document.getElementById('rsvp-msg').value,
+    };
+    
     await db.upsertRsvp(
       currentFamilia.code,
-      selRsvpVal,
-      parseInt(document.getElementById('rsvp-adults').value) || 0,
-      parseInt(document.getElementById('rsvp-kids').value) || 0,
-      document.getElementById('rsvp-diet').value,
-      document.getElementById('rsvp-msg').value
+      rsvpData.status,
+      rsvpData.adults,
+      rsvpData.kids,
+      rsvpData.dietary,
+      rsvpData.message
     );
+    
     document.getElementById('rsvp-s2').style.display = 'none';
     document.getElementById('rsvp-ok').style.display = 'block';
+    
+    // 📧 ADICIONE ESTA PARTE - ENVIA E-MAIL
+    try {
+      await sendNotification('rsvp', { 
+        familia: currentFamilia, 
+        rsvp: rsvpData
+      });
+    } catch (e) {
+      console.warn('E-mail não enviado:', e);
+    }
   } catch (e) {
     alert('Erro ao confirmar: ' + e.message);
   }
 };
-
+  
 // ─── MURAL ───
 async function renderMessages() {
   try {
@@ -798,10 +831,17 @@ window.addMessage = async function() {
   const msg = document.getElementById('mural-msg').value.trim();
   if (!name || !msg) { alert('Por favor, preencha seu nome e mensagem.'); return; }
   try {
-    await db.addMessage(msg, name);
+    const message = await db.addMessage(msg, name);  // ← GUARDA O RETORNO
     await renderMessages();
     document.getElementById('mural-name').value = '';
     document.getElementById('mural-msg').value = '';
+    
+    // 📧 ADICIONE ESTA PARTE - ENVIA E-MAIL
+    try {
+      await sendNotification('message', { message });
+    } catch (e) {
+      console.warn('E-mail não enviado:', e);
+    }
   } catch (e) {
     alert('Erro ao enviar mensagem: ' + e.message);
   }
