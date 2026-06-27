@@ -402,6 +402,7 @@ tr:hover td{background:rgba(199,164,108,.03);}
 <script type="module">
 import { supabase, testConnection } from './supabase-client.js';
 import * as db from './db.js';
+import { sendNotification } from './email.js';
 
 console.log('🚀 Admin iniciando...');
 
@@ -682,13 +683,21 @@ window.addFamily = async function() {
   const raw = document.getElementById('nf-members').value.trim();
   if (!name) { showToast('Informe o nome da família.'); return; }
   try {
-    await db.addFamilia(code, name, raw.split('\n').filter(Boolean));
+    const members = raw.split('\n').filter(Boolean);
+    const familia = await db.addFamilia(code, name, members);
     await renderGuests();
     await renderDashboard();
     closeModal('modal-add-family');
     document.getElementById('nf-name').value = '';
     document.getElementById('nf-members').value = '';
     showToast('✓ Família ' + name + ' adicionada!');
+    
+    // 📧 Envia e-mail de notificação
+    try {
+      await sendNotification('family', { familia });
+    } catch (e) {
+      console.warn('E-mail não enviado:', e);
+    }
   } catch (e) {
     showToast('Erro: ' + e.message);
   }
