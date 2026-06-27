@@ -1,0 +1,12 @@
+{
+  "name": "wedding-site",
+  "version": "1.0.0",
+  "description": "Site de casamento Luiza & Samuel",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  }
+}
