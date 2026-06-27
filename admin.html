@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Luiza & Samuel</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bd:#4A2E1F;--bm:#6F4E37;--bg:#E8DCCB;--ow:#F8F5F0;--go:#C7A46C;--gl:#E8D5B0;--cr:#FBF8F3;--sw:230px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--cr);color:#2A1810;display:flex;min-height:100vh;}
+
+/* LOGIN */
+.login-screen{position:fixed;inset:0;background:var(--bd);display:flex;align-items:center;justify-content:center;z-index:999;}
+.login-box{background:rgba(255,255,255,.04);border:1px solid rgba(199,164,108,.25);padding:3rem;width:100%;max-width:370px;border-radius:8px;}
+.login-logo{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--ow);text-align:center;margin-bottom:.2rem;}
+.login-sub{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--go);text-align:center;margin-bottom:2.3rem;}
+.ll{display:block;font-size:.63rem;letter-spacing:.15em;text-transform:uppercase;color:var(--go);margin-bottom:.4rem;}
+.li{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(199,164,108,.2);color:var(--ow);padding:.78rem .95rem;font-family:'Inter',sans-serif;font-size:.88rem;margin-bottom:1.15rem;outline:none;border-radius:4px;}
+.li:focus{border-color:var(--go);}
+.li::placeholder{color:rgba(232,220,203,.3);}
+.l-btn{width:100%;background:var(--go);color:var(--bd);border:none;padding:.88rem;font-size:.73rem;letter-spacing:.15em;text-transform:uppercase;font-weight:500;cursor:pointer;border-radius:4px;transition:background .2s;}
+.l-btn:hover{background:var(--gl);}
+.l-err{font-size:.78rem;color:#ef9a9a;margin-bottom:.9rem;display:none;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sw);background:var(--bd);min-height:100vh;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;flex-shrink:0;}
+.sb-logo{padding:1.8rem 1.4rem;border-bottom:1px solid rgba(199,164,108,.15);}
+.sb-logo-t{font-family:'Cormorant Garamond',serif;font-size:1.35rem;color:var(--ow);}
+.sb-logo-s{font-size:.58rem;letter-spacing:.2em;color:var(--go);text-transform:uppercase;margin-top:.18rem;}
+.sb-nav{flex:1;padding:.8rem 0;overflow-y:auto;}
+.nav-it{display:flex;align-items:center;gap:.7rem;padding:.75rem 1.4rem;font-size:.8rem;color:rgba(232,220,203,.62);cursor:pointer;transition:all .2s;border:none;background:none;width:100%;text-align:left;border-right:2px solid transparent;font-family:'Inter',sans-serif;}
+.nav-it:hover{color:var(--ow);background:rgba(255,255,255,.05);}
+.nav-it.active{color:var(--go);background:rgba(199,164,108,.1);border-right-color:var(--go);}
+.sb-foot{padding:1.4rem;border-top:1px solid rgba(199,164,108,.15);font-size:.7rem;color:rgba(232,220,203,.38);}
+.sb-foot strong{display:block;color:rgba(232,220,203,.68);margin-bottom:.18rem;}
+.logout{background:none;border:none;color:var(--go);font-size:.7rem;cursor:pointer;margin-top:.45rem;letter-spacing:.1em;font-family:'Inter',sans-serif;}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;}
+.topbar{background:white;border-bottom:1px solid rgba(199,164,108,.13);padding:.95rem 1.8rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+.topbar-title{font-size:.95rem;font-weight:500;color:var(--bd);}
+.topbar-date{font-size:.73rem;color:#9A7B62;}
+.content{padding:1.8rem;}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.9rem;margin-bottom:1.8rem;}
+.stat-card{background:white;border:1px solid rgba(199,164,108,.13);padding:1.35rem;border-radius:8px;}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:2.3rem;color:var(--bd);line-height:1;display:block;}
+.stat-lbl{font-size:.63rem;letter-spacing:.15em;text-transform:uppercase;color:#9A7B62;margin-top:.35rem;}
+.stat-tr{font-size:.7rem;margin-top:.45rem;}
+.tr-up{color:#4A7C59;} .tr-n{color:#9A7B62;}
+
+/* SECTION HEADER */
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;flex-wrap:wrap;gap:.5rem;}
+.sh h2{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:#9A7B62;}
+.btn-sm{background:var(--bd);color:white;border:none;padding:.48rem .95rem;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s;border-radius:4px;}
+.btn-sm:hover{background:var(--bm);}
+.btn-sm-o{background:transparent;color:var(--bd);border:1px solid var(--bg);padding:.48rem .95rem;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;border-radius:4px;}
+.btn-sm-o:hover{border-color:var(--bd);}
+.btn-danger{background:#c62828;color:white;border:none;padding:.38rem .7rem;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:background .2s;}
+.btn-danger:hover{background:#b71c1c;}
+.btn-edit{background:rgba(199,164,108,.15);color:var(--bd);border:1px solid var(--go);padding:.38rem .7rem;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:all .2s;}
+.btn-edit:hover{background:rgba(199,164,108,.25);}
+
+/* TABLE */
+.tw{background:white;border:1px solid rgba(199,164,108,.13);overflow:auto;margin-bottom:1.8rem;border-radius:8px;}
+table{width:100%;border-collapse:collapse;min-width:580px;}
+th{background:var(--bd);color:var(--ow);padding:.72rem .95rem;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;font-weight:400;text-align:left;}
+td{padding:.72rem .95rem;border-bottom:1px solid rgba(199,164,108,.08);font-size:.8rem;color:#5C3D2A;}
+tr:hover td{background:rgba(199,164,108,.03);}
+.pill{font-size:.58rem;letter-spacing:.08em;padding:.22rem .58rem;border-radius:20px;text-transform:uppercase;white-space:nowrap;display:inline-block;}
+.pg{background:#E8F5E9;color:#2E7D32;} .pr{background:#FFEBEE;color:#C62828;} .pp{background:var(--bg);color:#5C3D2A;} .pgo{background:rgba(199,164,108,.15);color:var(--bm);}
+
+/* PROGRESS */
+.pbar{height:4px;background:var(--bg);border-radius:2px;overflow:hidden;min-width:70px;display:inline-block;width:80px;}
+.pfill{height:100%;background:var(--go);}
+
+/* CHARTS */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:1.8rem;}
+.chart-card{background:white;border:1px solid rgba(199,164,108,.13);padding:1.35rem;border-radius:8px;}
+.chart-title{font-size:.63rem;letter-spacing:.15em;text-transform:uppercase;color:#9A7B62;margin-bottom:1.15rem;}
+.bar-wrap{display:flex;align-items:flex-end;gap:.45rem;height:110px;}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:.28rem;flex:1;}
+.bar-fill{width:100%;background:var(--go);opacity:.8;border-radius:2px 2px 0 0;min-height:3px;}
+.bar-lbl{font-size:.58rem;color:#9A7B62;}
+.leg{display:flex;flex-direction:column;gap:.45rem;}
+.leg-item{display:flex;align-items:center;gap:.45rem;font-size:.73rem;color:#5C3D2A;}
+.leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+/* QTY EDITOR */
+.qty-row{display:flex;align-items:center;gap:.5rem;}
+.qty-btn{width:24px;height:24px;border:1px solid var(--bg);background:white;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;color:var(--bd);transition:all .2s;flex-shrink:0;border-radius:4px;}
+.qty-btn:hover{background:var(--bd);color:white;border-color:var(--bd);}
+.qty-val{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--bd);min-width:28px;text-align:center;}
+.qty-input{width:52px;border:1px solid var(--bg);padding:.3rem .5rem;font-size:.82rem;color:var(--bd);text-align:center;outline:none;border-radius:4px;}
+.qty-input:focus{border-color:var(--go);}
+
+/* RECV EDITOR */
+.recv-adj{display:flex;align-items:center;gap:.4rem;}
+.recv-dec{padding:.3rem .6rem;background:#fff3e0;border:1px solid #ffcc80;color:#e65100;font-size:.7rem;cursor:pointer;border-radius:4px;transition:all .2s;}
+.recv-dec:hover{background:#ffe0b2;}
+
+/* PAGES */
+.page{display:none;}
+.page.active{display:block;}
+
+/* MODAL */
+.mb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.52);z-index:200;align-items:center;justify-content:center;padding:1rem;}
+.mb.open{display:flex;}
+.mbox{background:white;padding:1.9rem;max-width:460px;width:100%;max-height:90vh;overflow-y:auto;border-radius:8px;}
+.mbox h3{font-family:'Cormorant Garamond',serif;font-size:1.35rem;color:var(--bd);margin-bottom:1.15rem;}
+.fl{display:block;font-size:.63rem;letter-spacing:.13em;text-transform:uppercase;color:#9A7B62;margin-bottom:.32rem;margin-top:.9rem;}
+.fi{width:100%;border:1px solid var(--bg);padding:.68rem .88rem;font-family:'Inter',sans-serif;font-size:.83rem;color:#2A1810;background:var(--cr);outline:none;border-radius:4px;}
+.fi:focus{border-color:var(--go);}
+.mfoot{display:flex;gap:.7rem;margin-top:1.4rem;flex-wrap:wrap;}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--bd);color:white;padding:.9rem 1.5rem;font-size:.8rem;z-index:999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;border-left:3px solid var(--go);border-radius:4px;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+/* MESSAGES CARDS */
+.msg-card{background:white;border:1px solid rgba(199,164,108,.13);padding:1.2rem;display:flex;justify-content:space-between;align-items:start;gap:1rem;margin-bottom:.7rem;border-radius:8px;}
+.msg-txt{font-size:.85rem;color:#5C3D2A;line-height:1.7;margin-bottom:.35rem;}
+.msg-auth{font-size:.7rem;color:#9A7B62;}
+
+/* CONTENT EDITOR */
+.ce-block{background:white;border:1px solid rgba(199,164,108,.13);padding:1.4rem;margin-bottom:1.1rem;border-radius:8px;}
+.ce-title{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:#9A7B62;margin-bottom:.9rem;}
+
+/* SAVED BADGE */
+.saved-badge{font-size:.65rem;color:#4A7C59;background:#E8F5E9;padding:.2rem .55rem;border-radius:10px;display:none;}
+.saved-badge.show{display:inline-block;}
+
+/* LOADING */
+.loading-spinner{display:inline-block;width:20px;height:20px;border:2px solid rgba(74,46,31,.2);border-radius:50%;border-top-color:var(--bd);animation:spin .8s ease-in-out infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* DB STATUS */
+#db-status{position:fixed;bottom:1rem;right:1rem;z-index:999;font-size:.6rem;padding:.3rem .7rem;border-radius:20px;background:rgba(255,255,255,.9);box-shadow:0 2px 8px rgba(0,0,0,.1);}
+
+@media(max-width:700px){.sidebar{display:none;}.charts-grid{grid-template-columns:1fr;}.stats-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));}.content{padding:1rem;}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="login-screen">
+  <div class="login-box">
+    <p class="login-logo">L ✦ S</p>
+    <p class="login-sub">Painel Administrativo</p>
+    <p class="l-err" id="l-err">E-mail ou senha incorretos.</p>
+    <label class="ll">E-mail</label>
+    <input type="email" class="li" id="l-email" placeholder="noivos123@gmail.com">
+    <label class="ll">Senha</label>
+    <input type="password" class="li" id="l-pass" placeholder="••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="l-btn" onclick="doLogin()">Entrar →</button>
+    <p style="color:rgba(232,220,203,.4);font-size:.55rem;margin-top:.9rem;text-align:center;">Conectado ao Supabase</p>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-logo"><p class="sb-logo-t">L ✦ S</p><p class="sb-logo-s">Admin</p></div>
+  <nav class="sb-nav">
+    <button class="nav-it active" onclick="goPage('dashboard',this)">📊 Dashboard</button>
+    <button class="nav-it" onclick="goPage('guests',this)">👥 Convidados</button>
+    <button class="nav-it" onclick="goPage('gifts',this)">🎁 Presentes</button>
+    <button class="nav-it" onclick="goPage('messages',this)">💌 Mensagens</button>
+    <button class="nav-it" onclick="goPage('content',this)">✏️ Conteúdo</button>
+    <button class="nav-it" onclick="goPage('reports',this)">📋 Relatórios</button>
+  </nav>
+  <div class="sb-foot">
+    <strong id="sb-email">noivos123@gmail.com</strong>
+    Administrador
+    <br><button class="logout" onclick="doLogout()">Sair →</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <span class="topbar-title" id="topbar-title">Dashboard</span>
+    <span class="topbar-date" id="topbar-date"></span>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid" id="dash-stats">
+        <div style="grid-column:1/-1;text-align:center;padding:2rem;color:#9A7B62;">
+          <span class="loading-spinner"></span>
+          <p style="margin-top:.5rem;">Carregando estatísticas...</p>
+        </div>
+      </div>
+      <div class="charts-grid">
+        <div class="chart-card">
+          <p class="chart-title">Confirmações por período</p>
+          <div class="bar-wrap" id="bar-chart"></div>
+        </div>
+        <div class="chart-card">
+          <p class="chart-title">Status dos convidados</p>
+          <div style="display:flex;align-items:center;justify-content:center;gap:1.8rem;flex-wrap:wrap;">
+            <svg width="110" height="110" viewBox="0 0 110 110" id="donut-svg">
+              <circle cx="55" cy="55" r="42" fill="none" stroke="#E8DCCB" stroke-width="16"/>
+            </svg>
+            <div class="leg" id="donut-legend"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sh"><h2>Últimas confirmações</h2></div>
+      <div class="tw"><table><thead><tr><th>Família</th><th>Código</th><th>Status</th><th>Adultos</th><th>Crianças</th><th>Confirmado em</th></tr></thead><tbody id="dash-rsvp-tbody"><tr><td colspan="6" style="text-align:center;padding:1.5rem;color:#9A7B62;">Carregando...</td></tr></tbody></table></div>
+      <div class="sh"><h2>Progresso dos presentes</h2></div>
+      <div class="tw"><table><thead><tr><th>Item</th><th>Categoria</th><th>Progresso</th><th>Status</th></tr></thead><tbody id="dash-gifts-tbody"><tr><td colspan="4" style="text-align:center;padding:1.5rem;color:#9A7B62;">Carregando...</td></tr></tbody></table></div>
+    </div>
+
+    <!-- CONVIDADOS -->
+    <div class="page" id="page-guests">
+      <div class="sh">
+        <h2>Famílias cadastradas</h2>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+          <button class="btn-sm-o" onclick="openModal('modal-import')">⬆ Importar CSV</button>
+          <button class="btn-sm" onclick="openModal('modal-add-family')">+ Nova Família</button>
+        </div>
+      </div>
+      <div class="tw"><table><thead><tr><th>Código</th><th>Família</th><th>Membros</th><th>Status</th><th>Adultos</th><th>Crianças</th><th>Restrições</th><th>Ações</th></tr></thead><tbody id="guests-tbody"><tr><td colspan="8" style="text-align:center;padding:1.5rem;color:#9A7B62;"><span class="loading-spinner"></span> Carregando...</td></tr></tbody></table></div>
+    </div>
+
+    <!-- PRESENTES -->
+    <div class="page" id="page-gifts">
+      <div class="sh">
+        <h2>Lista de presentes <span class="saved-badge" id="gifts-saved">✓ Salvo</span></h2>
+        <button class="btn-sm" onclick="openModal('modal-add-gift')">+ Adicionar Item</button>
+      </div>
+      <p style="font-size:.78rem;color:#9A7B62;margin-bottom:1rem;">Use <strong>± Qtd Pedida</strong> para ajustar quantidades. Use <strong>− Recebido</strong> para corrigir erros de compra. Tudo é salvo automaticamente.</p>
+      <div class="tw"><table><thead><tr><th>Item</th><th>Categoria</th><th>Qtd Pedida</th><th>Recebido</th><th>Progresso</th><th>Lojas</th><th>Ações</th></tr></thead><tbody id="gifts-tbody"><tr><td colspan="7" style="text-align:center;padding:1.5rem;color:#9A7B62;"><span class="loading-spinner"></span> Carregando...</td></tr></tbody></table></div>
+    </div>
+
+    <!-- MENSAGENS -->
+    <div class="page" id="page-messages">
+      <div class="sh"><h2>Mural de mensagens</h2><span style="font-size:.73rem;color:#9A7B62;" id="msg-count">Carregando...</span></div>
+      <div id="msgs-container"><p style="color:#9A7B62;padding:1rem;"><span class="loading-spinner"></span> Carregando mensagens...</p></div>
+    </div>
+
+    <!-- CONTEÚDO -->
+    <div class="page" id="page-content">
+      <h2 style="font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:#9A7B62;margin-bottom:1.4rem">Editar Conteúdo do Site</h2>
+      <div class="ce-block">
+        <p class="ce-title">Informações do Evento</p>
+        <label class="fl">Data do casamento</label><input class="fi" type="date" id="ce-date">
+        <label class="fl">Horário</label><input class="fi" type="time" id="ce-time">
+        <label class="fl">Local — nome</label><input class="fi" type="text" id="ce-loc">
+        <label class="fl">Local — endereço completo</label><input class="fi" type="text" id="ce-addr">
+        <div style="margin-top:1rem;display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;">
+          <button class="btn-sm" onclick="saveContent()">Salvar alterações</button>
+          <span class="saved-badge" id="content-saved">✓ Salvo</span>
+        </div>
+      </div>
+      <div class="ce-block">
+        <p class="ce-title">Versículo em destaque</p>
+        <label class="fl">Texto</label><textarea class="fi" id="ce-verse" rows="3" style="resize:none"></textarea>
+        <label class="fl">Referência</label><input class="fi" type="text" id="ce-verse-ref">
+        <div style="margin-top:1rem;"><button class="btn-sm" onclick="saveContent()">Salvar alterações</button></div>
+      </div>
+      <div class="ce-block">
+        <p class="ce-title">Sobre e-mails</p>
+        <div style="background:#fff8e6;border-left:3px solid #f0c040;padding:1rem;font-size:.82rem;color:#7a5c00;line-height:1.7;border-radius:4px;">
+          <strong>ℹ️ Como funcionam os e-mails nesta versão:</strong><br>
+          Neste arquivo HTML, os e-mails são <em>simulados</em> — nenhum e-mail real é enviado. Para e-mails funcionarem de verdade, você precisa do projeto Next.js configurado com:<br><br>
+          • <strong>Gmail:</strong> ative verificação em 2 etapas → gere uma "Senha de App" → configure no <code>.env.local</code><br>
+          • <strong>Resend.com</strong> (recomendado — mais fácil): crie conta gratuita, pegue a API Key e configure<br><br>
+          No projeto Next.js, cada confirmação de presença e compra de presente dispara e-mail automático para <strong>noivos123@gmail.com</strong>.
+        </div>
+      </div>
+    </div>
+
+    <!-- RELATÓRIOS -->
+    <div class="page" id="page-reports">
+      <h2 style="font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:#9A7B62;margin-bottom:1.4rem">Exportar Relatórios</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.9rem;">
+        <div style="background:white;border:1px solid rgba(199,164,108,.13);padding:1.35rem;border-radius:8px;">
+          <p style="font-size:.88rem;color:var(--bd);font-weight:500;margin-bottom:.45rem;">Lista de Convidados</p>
+          <p style="font-size:.78rem;color:#9A7B62;margin-bottom:1.15rem;">Nome, código, status, membros</p>
+          <div style="display:flex;gap:.45rem;flex-wrap:wrap;">
+            <button class="btn-sm" onclick="exportCSV('guests')">CSV</button>
+            <button class="btn-sm-o" onclick="exportPrint('guests')">Imprimir</button>
+          </div>
+        </div>
+        <div style="background:white;border:1px solid rgba(199,164,108,.13);padding:1.35rem;border-radius:8px;">
+          <p style="font-size:.88rem;color:var(--bd);font-weight:500;margin-bottom:.45rem;">Confirmações de Presença</p>
+          <p style="font-size:.78rem;color:#9A7B62;margin-bottom:1.15rem;">Adultos, crianças, restrições, mensagens</p>
+          <div style="display:flex;gap:.45rem;flex-wrap:wrap;">
+            <button class="btn-sm" onclick="exportCSV('rsvps')">CSV</button>
+            <button class="btn-sm-o" onclick="exportPrint('rsvps')">Imprimir</button>
+          </div>
+        </div>
+        <div style="background:white;border:1px solid rgba(199,164,108,.13);padding:1.35rem;border-radius:8px;">
+          <p style="font-size:.88rem;color:var(--bd);font-weight:500;margin-bottom:.45rem;">Lista de Presentes</p>
+          <p style="font-size:.78rem;color:#9A7B62;margin-bottom:1.15rem;">Itens, quantidades pedidas e recebidas</p>
+          <div style="display:flex;gap:.45rem;flex-wrap:wrap;">
+            <button class="btn-sm" onclick="exportCSV('gifts')">CSV</button>
+            <button class="btn-sm-o" onclick="exportPrint('gifts')">Imprimir</button>
+          </div>
+        </div>
+        <div style="background:white;border:1px solid rgba(199,164,108,.13);padding:1.35rem;border-radius:8px;">
+          <p style="font-size:.88rem;color:var(--bd);font-weight:500;margin-bottom:.45rem;">Resumo Geral</p>
+          <p style="font-size:.78rem;color:#9A7B62;margin-bottom:1.15rem;">Estatísticas completas do casamento</p>
+          <div style="display:flex;gap:.45rem;flex-wrap:wrap;">
+            <button class="btn-sm" onclick="exportPrint('all')">Imprimir tudo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- STATUS DO BANCO -->
+<div id="db-status">🔄 Conectando ao banco...</div>
+
+<!-- MODALS -->
+<div class="mb" id="modal-add-family">
+  <div class="mbox">
+    <h3>Nova Família</h3>
+    <label class="fl">Código (gerado automaticamente)</label>
+    <input class="fi" type="text" id="nf-code" readonly style="background:#f0ede8;">
+    <label class="fl">Nome da família</label>
+    <input class="fi" type="text" id="nf-name" placeholder="Família Souza">
+    <label class="fl">Membros (um por linha)</label>
+    <textarea class="fi" id="nf-members" rows="4" style="resize:none;" placeholder="Carlos Souza&#10;Ana Souza&#10;Miguel Souza (8 anos)"></textarea>
+    <div class="mfoot">
+      <button class="btn-sm" onclick="addFamily()">Salvar família</button>
+      <button class="btn-sm-o" onclick="closeModal('modal-add-family')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="mb" id="modal-add-gift">
+  <div class="mbox">
+    <h3>Novo Presente</h3>
+    <label class="fl">Nome do item</label>
+    <input class="fi" type="text" id="ng-name" placeholder="Ex: Liquidificador">
+    <label class="fl">Categoria</label>
+    <select class="fi" id="ng-cat"><option value="eletros">Eletros</option><option value="cozinha">Cozinha</option><option value="quarto">Quarto</option><option value="banheiro">Banheiro</option></select>
+    <label class="fl">Emoji (opcional)</label>
+    <input class="fi" type="text" id="ng-emoji" placeholder="🎁" maxlength="2">
+    <label class="fl">Descrição</label>
+    <textarea class="fi" id="ng-desc" rows="2" style="resize:none;" placeholder="Breve descrição..."></textarea>
+    <label class="fl">Quantidade necessária</label>
+    <input class="fi" type="number" id="ng-qty" value="1" min="1" max="99">
+    <label class="fl">Lojas (separadas por vírgula)</label>
+    <input class="fi" type="text" id="ng-stores" placeholder="Amazon, Shopee, Magazine Luiza">
+    <div class="mfoot">
+      <button class="btn-sm" onclick="addGift()">Salvar item</button>
+      <button class="btn-sm-o" onclick="closeModal('modal-add-gift')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="mb" id="modal-import">
+  <div class="mbox">
+    <h3>Importar via CSV</h3>
+    <p style="font-size:.8rem;color:#9A7B62;margin-bottom:1.2rem;line-height:1.6;">Colunas esperadas: <code style="background:#f0ede8;padding:.1rem .3rem;">codigo,nome,membros</code><br>Membros separados por ponto-e-vírgula.</p>
+    <div style="border:2px dashed var(--bg);padding:2rem;text-align:center;color:#9A7B62;font-size:.83rem;cursor:pointer;border-radius:8px;" onclick="document.getElementById('csv-input').click()">
+      📁 Clique para selecionar o arquivo CSV
+    </div>
+    <input type="file" id="csv-input" accept=".csv" style="display:none;" onchange="importCSV(this)">
+    <div class="mfoot">
+      <button class="btn-sm-o" onclick="closeModal('modal-import')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div class="mb" id="modal-edit-family">
+  <div class="mbox">
+    <h3>Editar Família</h3>
+    <input type="hidden" id="ef-idx">
+    <label class="fl">Código</label>
+    <input class="fi" type="text" id="ef-code" readonly style="background:#f0ede8;">
+    <label class="fl">Nome da família</label>
+    <input class="fi" type="text" id="ef-name">
+    <label class="fl">Membros (um por linha)</label>
+    <textarea class="fi" id="ef-members" rows="4" style="resize:none;"></textarea>
+    <div class="mfoot">
+      <button class="btn-sm" onclick="saveEditFamily()">Salvar</button>
+      <button class="btn-sm-o" onclick="closeModal('modal-edit-family')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
+  }
+}
+</script>
+
+<script type="module">
+import { supabase, testConnection } from './supabase-client.js';
+import * as db from './db.js';
+
+// ─── EXPORTA PARA USO GLOBAL ───
+window.db = db;
+window.supabase = supabase;
+
+// ─── STATUS DO BANCO ───
+const statusEl = document.getElementById('db-status');
+async function checkDB() {
+  const ok = await testConnection();
+  statusEl.textContent = ok ? '✅ Banco conectado' : '❌ Banco offline';
+  statusEl.style.color = ok ? '#4A7C59' : '#C62828';
+}
+checkDB();
+
+// ─── AUTH ───
+const ADMIN_EMAIL = 'noivos123@gmail.com';
+const ADMIN_PASS = '1234';
+
+async function checkSession() {
+  const logged = sessionStorage.getItem('admin_logged');
+  if (logged === 'true') {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('sb-email').textContent = ADMIN_EMAIL;
+    document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('pt-BR', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+    await initAdmin();
+  }
+}
+
+window.doLogin = function() {
+  const e = document.getElementById('l-email').value.trim();
+  const p = document.getElementById('l-pass').value;
+  if (e === ADMIN_EMAIL && p === ADMIN_PASS) {
+    sessionStorage.setItem('admin_logged', 'true');
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('sb-email').textContent = e;
+    document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('pt-BR', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+    initAdmin();
+  } else {
+    document.getElementById('l-err').style.display = 'block';
+  }
+};
+
+window.doLogout = function() {
+  sessionStorage.removeItem('admin_logged');
+  location.reload();
+};
+
+// ─── INIT ───
+async function initAdmin() {
+  await renderDashboard();
+  await renderGuests();
+  await renderGifts();
+  await renderMessages();
+  await loadContent();
+}
+
+// ─── DASHBOARD ───
+async function renderDashboard() {
+  try {
+    const familias = await db.getFamilias();
+    const rsvps = await db.getRsvps();
+    const gifts = await db.getFullGifts();
+    const messages = await db.getMessages();
+
+    let conf = 0, decl = 0, pend = 0, adults = 0, kids = 0;
+    familias.forEach(f => {
+      const r = rsvps[f.code];
+      if (!r) { pend++; return; }
+      if (r.status === 'CONFIRMED') { conf++; adults += r.adults || 0; kids += r.kids || 0; }
+      else decl++;
+    });
+
+    const totalNeeded = gifts.reduce((a, g) => a + g.needed, 0);
+    const totalReceived = gifts.reduce((a, g) => a + g.received, 0);
+    const totalMembers = familias.reduce((a, f) => a + (f.members || []).length, 0);
+
+    document.getElementById('dash-stats').innerHTML = [
+      { v: familias.length, l: 'Famílias', t: `${totalMembers} pessoas` },
+      { v: conf, l: 'Confirmadas', t: `↑ ${Math.round(conf/Math.max(familias.length,1)*100)}% resposta`, c: 'tr-up' },
+      { v: decl, l: 'Recusaram', t: `${Math.round(decl/Math.max(familias.length,1)*100)}% do total` },
+      { v: pend, l: 'Aguardando', t: `${Math.round(pend/Math.max(familias.length,1)*100)}% sem resp.` },
+      { v: adults, l: 'Adultos conf.', t: 'confirmados' },
+      { v: kids, l: 'Crianças conf.', t: 'confirmadas' },
+      { v: gifts.length, l: 'Itens na lista', t: `${totalNeeded} unidades` },
+      { v: totalReceived, l: 'Itens recebidos', t: `${Math.round(totalReceived/Math.max(totalNeeded,1)*100)}% da lista`, c: 'tr-up' },
+      { v: messages.length, l: 'Mensagens', t: 'no mural' },
+    ].map(s => `<div class="stat-card"><span class="stat-val">${s.v}</span><span class="stat-lbl">${s.l}</span><p class="stat-tr ${s.c||'tr-n'}">${s.t}</p></div>`).join('');
+
+    // BAR CHART
+    const bars = [
+      { l: 'Fam.', v: familias.length },
+      { l: 'Conf.', v: conf },
+      { l: 'Rec.', v: decl },
+      { l: 'Pend.', v: pend },
+      { l: 'Adultos', v: adults },
+      { l: 'Itens', v: totalReceived }
+    ];
+    const maxB = Math.max(...bars.map(b => b.v), 1);
+    document.getElementById('bar-chart').innerHTML = bars.map(b => 
+      `<div class="bar-col"><div class="bar-fill" style="height:${Math.round(b.v/maxB*100)}px"></div><span class="bar-lbl">${b.l}</span></div>`
+    ).join('');
+
+    // DONUT
+    const total = conf + decl + pend || 1;
+    const segs = [
+      { v: conf, c: '#4A7C59', l: 'Confirmadas' },
+      { v: decl, c: '#C62828', l: 'Recusaram' },
+      { v: pend, c: '#C7A46C', l: 'Aguardando' }
+    ];
+    let off = 0;
+    const r = 42, circ = 2 * Math.PI * r;
+    let paths = '';
+    segs.forEach(sg => {
+      const dash = circ * (sg.v / total);
+      paths += `<circle cx="55" cy="55" r="${r}" fill="none" stroke="${sg.c}" stroke-width="16" stroke-dasharray="${dash} ${circ-dash}" stroke-dashoffset="${-off}" transform="rotate(-90 55 55)"/>`;
+      off += dash;
+    });
+    paths += `<text x="55" y="55" text-anchor="middle" dy=".35em" font-size="16" font-family="Cormorant Garamond" fill="#4A2E1F">${Math.round(conf/total*100)}%</text>`;
+    document.getElementById('donut-svg').innerHTML = `<circle cx="55" cy="55" r="42" fill="none" stroke="#E8DCCB" stroke-width="16"/>${paths}`;
+    document.getElementById('donut-legend').innerHTML = segs.map(s => 
+      `<p class="leg-item"><span class="leg-dot" style="background:${s.c}"></span>${s.l} (${s.v})</p>`
+    ).join('');
+
+    // RSVP TABLE
+    const rsvpRows = familias.filter(f => rsvps[f.code]).slice(0, 6).map(f => {
+      const r = rsvps[f.code];
+      const lbl = r.status === 'CONFIRMED' ? '<span class="pill pg">Confirmado</span>' : '<span class="pill pr">Recusou</span>';
+      const d = r.at ? new Date(r.at).toLocaleDateString('pt-BR') : '—';
+      return `<tr><td>${f.name}</td><td>${f.code}</td><td>${lbl}</td><td>${r.adults||0}</td><td>${r.kids||0}</td><td>${d}</td></tr>`;
+    }).join('') || '<tr><td colspan="6" style="text-align:center;color:#9A7B62;padding:1.5rem;">Nenhuma confirmação ainda.</td></tr>';
+    document.getElementById('dash-rsvp-tbody').innerHTML = rsvpRows;
+
+    // GIFTS TABLE
+    document.getElementById('dash-gifts-tbody').innerHTML = gifts.slice(0, 8).map(g => {
+      const pct = g.needed > 0 ? Math.round(g.received / g.needed * 100) : 0;
+      const st = g.received >= g.needed ? '<span class="pill pg">Completo</span>' : g.received > 0 ? '<span class="pill pgo">Parcial</span>' : '<span class="pill pp">Disponível</span>';
+      return `<tr><td>${g.name}</td><td>${g.category}</td><td><div style="display:flex;align-items:center;gap:.5rem;"><div class="pbar"><div class="pfill" style="width:${Math.min(pct,100)}%"></div></div><span style="font-size:.7rem;color:#9A7B62;">${g.received}/${g.needed}</span></div></td><td>${st}</td></tr>`;
+    }).join('') || '<tr><td colspan="4" style="text-align:center;color:#9A7B62;padding:1.5rem;">Nenhum presente cadastrado.</td></tr>';
+  } catch (e) {
+    console.error('Dashboard error:', e);
+    document.getElementById('dash-stats').innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:1rem;color:#C62828;">❌ Erro ao carregar: ${e.message}</div>`;
+    showToast('Erro ao carregar dashboard');
+  }
+}
+
+// ─── GUESTS ───
+async function renderGuests() {
+  try {
+    const familias = await db.getFamilias();
+    const rsvps = await db.getRsvps();
+    const stMap = { CONFIRMED: '<span class="pill pg">Confirmado</span>', DECLINED: '<span class="pill pr">Recusou</span>' };
+    
+    document.getElementById('guests-tbody').innerHTML = familias.map((f) => {
+      const r = rsvps[f.code];
+      const st = r ? (stMap[r.status] || '') : '<span class="pill pp">Pendente</span>';
+      return `<tr>
+        <td><strong>${f.code}</strong></td>
+        <td>${f.name}</td>
+        <td style="font-size:.75rem;color:#9A7B62;max-width:180px;">${(f.members || []).join(', ')}</td>
+        <td>${st}</td>
+        <td>${r?.adults??'—'}</td><td>${r?.kids??'—'}</td>
+        <td style="font-size:.74rem;">${r?.dietary||'—'}</td>
+        <td style="display:flex;gap:.35rem;flex-wrap:wrap;">
+          <button class="btn-edit" onclick="editFamily('${f.code}')">✏ Editar</button>
+          <button class="btn-danger" onclick="deleteFamily('${f.code}')">✕</button>
+        </td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="8" style="text-align:center;color:#9A7B62;padding:1.5rem;">Nenhuma família cadastrada.</td></tr>';
+    
+    genNextCode();
+  } catch (e) {
+    console.error('Guests error:', e);
+    document.getElementById('guests-tbody').innerHTML = `<tr><td colspan="8" style="text-align:center;color:#C62828;padding:1.5rem;">❌ Erro ao carregar: ${e.message}</td></tr>`;
+    showToast('Erro ao carregar convidados');
+  }
+}
+
+async function genNextCode() {
+  try {
+    const familias = await db.getFamilias();
+    const max = familias.reduce((m, f) => Math.max(m, parseInt(f.code.replace('FAM', '')) || 0), 0);
+    const next = 'FAM' + String(max + 1).padStart(3, '0');
+    const el = document.getElementById('nf-code');
+    if (el) el.value = next;
+  } catch (e) {
+    document.getElementById('nf-code').value = 'FAM001';
+  }
+}
+
+window.addFamily = async function() {
+  const name = document.getElementById('nf-name').value.trim();
+  const code = document.getElementById('nf-code').value;
+  const raw = document.getElementById('nf-members').value.trim();
+  if (!name) { showToast('Informe o nome da família.'); return; }
+  try {
+    await db.addFamilia(code, name, raw.split('\n').filter(Boolean));
+    await renderGuests();
+    await renderDashboard();
+    closeModal('modal-add-family');
+    document.getElementById('nf-name').value = '';
+    document.getElementById('nf-members').value = '';
+    showToast('✓ Família ' + name + ' adicionada!');
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+  }
+};
+
+window.editFamily = async function(code) {
+  try {
+    const familias = await db.getFamilias();
+    const f = familias.find(f => f.code === code);
+    if (!f) return;
+    document.getElementById('ef-idx').value = code;
+    document.getElementById('ef-code').value = f.code;
+    document.getElementById('ef-name').value = f.name;
+    document.getElementById('ef-members').value = (f.members || []).join('\n');
+    openModal('modal-edit-family');
+  } catch (e) {
+    showToast('Erro ao carregar família');
+  }
+};
+
+window.saveEditFamily = async function() {
+  const code = document.getElementById('ef-idx').value;
+  const name = document.getElementById('ef-name').value.trim();
+  const raw = document.getElementById('ef-members').value.trim();
+  if (!name) { showToast('Informe o nome da família.'); return; }
+  try {
+    await db.updateFamilia(code, name, raw.split('\n').filter(Boolean));
+    await renderGuests();
+    await renderDashboard();
+    closeModal('modal-edit-family');
+    showToast('✓ Família atualizada!');
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+  }
+};
+
+window.deleteFamily = async function(code) {
+  if (!confirm('Remover esta família?')) return;
+  try {
+    await db.deleteFamilia(code);
+    await renderGuests();
+    await renderDashboard();
+    showToast('Família removida.');
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+  }
+};
+
+window.importCSV = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const lines = e.target.result.trim().split('\n').slice(1);
+      const familias = await db.getFamilias();
+      let added = 0;
+      for (const line of lines) {
+        const parts = line.split(',');
+        if (parts.length < 2) continue;
+        const code = parts[0].trim().toUpperCase();
+        const name = parts[1].trim();
+        const members = parts[2] ? parts[2].split(';').map(m => m.trim()).filter(Boolean) : [];
+        if (!familias.find(f => f.code === code)) {
+          await db.addFamilia(code, name, members);
+          added++;
+        }
+      }
+      await renderGuests();
+      await renderDashboard();
+      closeModal('modal-import');
+      showToast(`✓ ${added} famílias importadas!`);
+    } catch (err) {
+      showToast('Erro ao importar: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+};
+
+// ─── GIFTS ───
+async function renderGifts() {
+  try {
+    const gifts = await db.getFullGifts();
+    document.getElementById('gifts-tbody').innerHTML = gifts.map(g => {
+      const pct = g.needed > 0 ? Math.round(g.received / g.needed * 100) : 0;
+      const st = g.received >= g.needed ? '<span class="pill pg">Completo</span>' : g.received > 0 ? '<span class="pill pgo">Parcial</span>' : '<span class="pill pp">Disponível</span>';
+      return `<tr>
+        <td><strong>${g.emoji||'🎁'} ${g.name}</strong><br><span style="font-size:.72rem;color:#9A7B62;">${g.description||''}</span></td>
+        <td>${g.category}</td>
+        <td>
+          <div class="qty-row">
+            <button class="qty-btn" onclick="adjQty(${g.id},-1)">−</button>
+            <span class="qty-val" id="qty-${g.id}">${g.needed}</span>
+            <button class="qty-btn" onclick="adjQty(${g.id},+1)">+</button>
+          </div>
+        </td>
+        <td>
+          <div class="recv-adj">
+            <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--bd);" id="recv-${g.id}">${g.received}</span>
+            ${g.received > 0 ? `<button class="recv-dec" onclick="adjRecv(${g.id},-1)">− recebido</button>` : ''}
+          </div>
+        </td>
+        <td><div style="display:flex;align-items:center;gap:.5rem;"><div class="pbar"><div class="pfill" style="width:${Math.min(pct,100)}%"></div></div><span style="font-size:.7rem;color:#9A7B62;">${pct}%</span></div></td>
+        <td style="font-size:.72rem;color:#9A7B62;">${(g.stores || []).join(', ')}</td>
+        <td>${g.is_extra ? `<button class="btn-danger" onclick="deleteGift(${g.id})">✕</button>` : ''}</td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="7" style="text-align:center;color:#9A7B62;padding:1.5rem;">Nenhum presente cadastrado.</td></tr>';
+  } catch (e) {
+    console.error('Gifts error:', e);
+    document.getElementById('gifts-tbody').innerHTML = `<tr><td colspan="7" style="text-align:center;color:#C62828;padding:1.5rem;">❌ Erro ao carregar: ${e.message}</td></tr>`;
+    showToast('Erro ao carregar presentes');
+  }
+}
+
+window.adjQty = async function(id, delta) {
+  try {
+    const gifts = await db.getFullGifts();
+    const g = gifts.find(g => g.id === id);
+    if (!g) return;
+    const nv = Math.max(0, g.needed + delta);
+    await db.updateGiftQty(id, nv);
+    const el = document.getElementById('qty-' + id);
+    if (el) el.textContent = nv;
+    flashSaved('gifts-saved');
+    await renderDashboard();
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+  }
+};
+
+window.adjRecv = async function(id, delta) {
+  try {
+    const gifts = await db.getFullGifts();
+    const g = gifts.find(g => g.id === id);
+    if (!g) return;
+    const nv = Math.max(0, g.received + delta);
+    await db.updateGiftReceived(id, nv);
+    await renderGifts();
+    await renderDashboard();
+    showToast('✓ Quantidade recebida atualizada.');
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+  }
+};
+
+window.addGift = async function() {
+  const name = document.getElementById('ng-name').value.trim();
+  const category = document.getElementById('ng-cat').value;
+  const emoji = document.getElementById('ng-emoji').value.trim() || '🎁';
+  const description = document.getElementById('ng-desc').value.trim();
+  const qty = parseInt(document.getElementById('ng-qty').value) || 1;
+  const stores = document.getElementById('ng-stores').value.split(',').map(x => x.trim()).filter(Boolean);
+  if (!name) { showToast('Informe o nome do item.'); return; }
+  try {
+    await db.addExtraGift(name, category, emoji, description, stores, qty);
+    await renderGifts();
+    await renderDashboard();
+    closeModal('modal-add-gift');
+    ['ng-name', 'ng-desc', 'ng-stores', 'ng-emoji'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('ng-qty').value = '1';
+    showToast('✓ ' + name + ' adicionado à lista!');
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+  }
+};
+
+window.deleteGift = async function(id) {
+  if (!confirm('Remover este item?')) return;
+  try {
+    await db.deleteGift(id);
+    await renderGifts();
+    await renderDashboard();
+    showToast('Item removido.');
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+  }
+};
+
+// ─── MESSAGES ───
+async function renderMessages() {
+  try {
+    const msgs = await db.getMessages();
+    document.getElementById('msg-count').textContent = msgs.length + ' mensagem(ns)';
+    document.getElementById('msgs-container').innerHTML = msgs.length ? msgs.map((m) => `
+      <div class="msg-card">
+        <div>
+          <p class="msg-txt">"${m.text}"</p>
+          <p class="msg-auth">— ${m.author} · ${m.at ? new Date(m.at).toLocaleDateString('pt-BR') : ''}</p>
+        </div>
+        <button class="btn-danger" onclick="deleteMessage(${m.id})" title="Remover mensagem">✕</button>
+      </div>
+    `).join('') : '<p style="color:#9A7B62;font-size:.85rem;padding:1rem;">Nenhuma mensagem ainda.</p>';
+  } catch (e) {
+    console.error('Messages error:', e);
+    document.getElementById('msgs-container').innerHTML = `<p style="color:#C62828;padding:1rem;">❌ Erro ao carregar: ${e.message}</p>`;
+  }
+}
+
+window.deleteMessage = async function(id) {
+  if (!confirm('Remover esta mensagem?')) return;
+  try {
+    await db.deleteMessage(id);
+    await renderMessages();
+    showToast('Mensagem removida.');
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+  }
+};
+
+// ─── CONTENT ───
+async function loadContent() {
+  try {
+    const content = await db.getSiteContent();
+    if (content.event_date) document.getElementById('ce-date').value = content.event_date;
+    if (content.event_time) document.getElementById('ce-time').value = content.event_time;
+    if (content.event_location) document.getElementById('ce-loc').value = content.event_location;
+    if (content.event_address) document.getElementById('ce-addr').value = content.event_address;
+    if (content.verse_text) document.getElementById('ce-verse').value = content.verse_text;
+    if (content.verse_ref) document.getElementById('ce-verse-ref').value = content.verse_ref;
+  } catch (e) {
+    console.error('Content error:', e);
+  }
+}
+
+window.saveContent = async function() {
+  try {
+    const updates = {
+      event_date: document.getElementById('ce-date').value,
+      event_time: document.getElementById('ce-time').value,
+      event_location: document.getElementById('ce-loc').value,
+      event_address: document.getElementById('ce-addr').value,
+      verse_text: document.getElementById('ce-verse').value,
+      verse_ref: document.getElementById('ce-verse-ref').value
+    };
+    for (const [key, value] of Object.entries(updates)) {
+      await db.updateSiteContent(key, value);
+    }
+    showToast('✓ Configurações salvas!');
+    flashSaved('content-saved');
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+  }
+};
+
+// ─── EXPORT ───
+window.exportCSV = async function(type) {
+  try {
+    const familias = await db.getFamilias();
+    const rsvps = await db.getRsvps();
+    const gifts = await db.getFullGifts();
+    
+    let csv = '', filename = '';
+    if (type === 'guests') {
+      csv = 'Código,Família,Membros,Status,Adultos,Crianças,Restrições,Mensagem\n';
+      familias.forEach(f => {
+        const r = rsvps[f.code];
+        csv += `"${f.code}","${f.name}","${(f.members||[]).join('; ')}","${r?r.status:'PENDENTE'}",${r?.adults||0},${r?.kids||0},"${r?.dietary||''}","${r?.message||''}"\n`;
+      });
+      filename = 'convidados.csv';
+    } else if (type === 'rsvps') {
+      csv = 'Família,Código,Status,Adultos,Crianças,Restrições,Mensagem,Data\n';
+      familias.filter(f => rsvps[f.code]).forEach(f => {
+        const r = rsvps[f.code];
+        csv += `"${f.name}","${f.code}","${r.status}",${r.adults||0},${r.kids||0},"${r.dietary||''}","${r.message||''}","${r.at?new Date(r.at).toLocaleDateString('pt-BR'):''}"\n`;
+      });
+      filename = 'confirmacoes.csv';
+    } else if (type === 'gifts') {
+      csv = 'Item,Categoria,Qtd Pedida,Qtd Recebida,Lojas\n';
+      gifts.forEach(g => {
+        csv += `"${g.name}","${g.category}",${g.needed},${g.received},"${(g.stores||[]).join(', ')}"\n`;
+      });
+      filename = 'presentes.csv';
+    }
+    
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('✓ CSV exportado!');
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+  }
+};
+
+window.exportPrint = function(type) {
+  showToast('Função de impressão disponível no console');
+  console.log('Export print:', type);
+};
+
+// ─── NAVEGAÇÃO ───
+const pageTitles = { dashboard: 'Dashboard', guests: 'Convidados', gifts: 'Presentes', messages: 'Mensagens', content: 'Conteúdo', reports: 'Relatórios' };
+
+window.goPage = async function(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-it').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  document.getElementById('topbar-title').textContent = pageTitles[id] || id;
+  
+  try {
+    if (id === 'dashboard') await renderDashboard();
+    if (id === 'guests') await renderGuests();
+    if (id === 'gifts') await renderGifts();
+    if (id === 'messages') await renderMessages();
+  } catch (e) {
+    console.error('Page load error:', e);
+    showToast('Erro ao carregar página');
+  }
+};
+
+// ─── MODALS ───
+window.openModal = function(id) { document.getElementById(id).classList.add('open'); };
+window.closeModal = function(id) { document.getElementById(id).classList.remove('open'); };
+document.querySelectorAll('.mb').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }));
+
+// ─── TOAST ───
+let toastTimer;
+window.showToast = function(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+};
+
+window.flashSaved = function(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+};
+
+// ─── BOOT ───
+checkSession();
+
+console.log('✅ Admin conectado ao Supabase!');
+</script>
+</body>
+</html>
