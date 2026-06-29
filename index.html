@@ -369,7 +369,7 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;position:relat
     <div class="rsvp-form fade-in">
       <div id="rsvp-s1">
         <label class="fl">Código da Família</label>
-        <input type="text" class="fi" id="fam-code" placeholder="Ex: FAM001" maxlength="6" style="text-transform:uppercase">
+       <input type="text" class="fi" id="fam-code" placeholder="Ex: FAM001 ou MEUCODIGO" style="text-transform:uppercase">
         <button class="btn-gold" onclick="lookupFamily()">Buscar minha família →</button>
       </div>
       <div id="rsvp-s2" style="display:none">
@@ -800,14 +800,28 @@ let selectedMembers = [];
 
 window.lookupFamily = async function() {
   const code = document.getElementById('fam-code').value.toUpperCase().trim();
-  if (!code) { alert('Por favor, informe o código.'); return; }
+  if (!code) { 
+    alert('Por favor, informe o código.'); 
+    return; 
+  }
+  
+  // ⚠️ REMOVA ou AUMENTE essa validação se quiser
+  // if (code.length < 3) {
+  //   alert('O código deve ter pelo menos 3 caracteres.');
+  //   return;
+  // }
+  
   try {
     const fam = await db.getFamiliaByCode(code);
-    if (!fam) { alert('Código não encontrado. Verifique seu convite.'); return; }
-    currentFamilia = fam;
-    const rsvp = await db.getRsvp(code);
-    
-    document.getElementById('fam-name').textContent = fam.name;
+    if (!fam) { 
+      alert('Código não encontrado. Verifique seu convite.'); 
+      return; 
+    }
+    // ... resto do código
+  } catch (e) {
+    alert('Erro ao buscar família: ' + e.message);
+  }
+};
     
     // CRIA OS CHECKBOXES
     const container = document.getElementById('fam-members-checkboxes');
