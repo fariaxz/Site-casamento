@@ -9,14 +9,45 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Verifica conexão
+// supabase-client.js
+
+// ═══════════════════════════════════════════════════
+// 🔧 VERSÃO COM TIMEOUT - NÃO FICA PRESO
+// ═══════════════════════════════════════════════════
 export async function testConnection() {
+  console.log('🔍 Testando conexão com o banco...');
+  
+  // Cria um timeout de 5 segundos
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => reject(new Error('⏰ Timeout - Conexão muito lenta')), 5000);
+  });
+  
+  // Tenta conectar
+  const connectionPromise = (async () => {
+    try {
+      const { data, error } = await supabase
+        .from('familias')
+        .select('count')
+        .limit(1);
+      
+      if (error) throw error;
+      console.log('✅ Conectado ao Supabase!');
+      return true;
+    } catch (e) {
+      console.error('❌ Erro ao conectar:', e.message);
+      throw e;
+    }
+  })();
+  
   try {
-    const { data, error } = await supabase.from('familias').select('count').limit(1);
-    if (error) throw error;
-    console.log('✅ Conectado ao Supabase!');
-    return true;
+    // Quem ganhar primeiro: a conexão ou o timeout
+    const result = await Promise.race([connectionPromise, timeoutPromise]);
+    return result;
   } catch (e) {
-    console.error('❌ Erro ao conectar:', e.message);
+    console.error('❌ Falha na conexão:', e.message);
     return false;
   }
 }
+
+// Testa automaticamente
+testConnection();
