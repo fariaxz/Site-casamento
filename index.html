@@ -507,13 +507,37 @@ window.supabase = supabase;
 window.sendNotification = sendNotification;
 
 // ─── STATUS DO BANCO ───
+// ─── STATUS DO BANCO ───
 const statusEl = document.getElementById('db-status');
+
 async function checkDB() {
-  const ok = await testConnection();
-  statusEl.textContent = ok ? '✅ Banco conectado' : '❌ Banco offline';
-  statusEl.style.color = ok ? '#4A7C59' : '#C62828';
+  console.log('🔍 Verificando conexão...');
+  
+  // Mostra "Carregando..." imediatamente
+  statusEl.textContent = '⏳ Carregando...';
+  statusEl.style.color = '#C7A46C';
+  
+  try {
+    const ok = await testConnection();
+    console.log('📊 Status:', ok ? '✅ Conectado' : '❌ Offline');
+    statusEl.textContent = ok ? '✅ Banco conectado' : '❌ Banco offline';
+    statusEl.style.color = ok ? '#4A7C59' : '#C62828';
+    
+    if (!ok) {
+      // Se falhou, tenta novamente após 3 segundos
+      setTimeout(() => {
+        console.log('🔄 Tentando reconectar...');
+        checkDB();
+      }, 3000);
+    }
+    return ok;
+  } catch (e) {
+    console.error('❌ Erro ao verificar:', e);
+    statusEl.textContent = '❌ Erro: ' + e.message;
+    statusEl.style.color = '#C62828';
+    return false;
+  }
 }
-checkDB();
 
 // ─── PARTICLES ───
 const pc = document.getElementById('particles');
