@@ -439,20 +439,25 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;}
         <button class="btn-canc" onclick="closeModal()">Voltar</button>
       </div>
     </div>
+    <!-- STEP 2: VERIFICAÇÃO COM FOTO + UPLOAD SUPABASE -->
     <div class="confirm-step" id="ms2">
       <h3 class="modal-ti">Confirmar compra</h3>
       <p class="conf-question">Para confirmar que você realmente comprou o presente, envie uma foto do produto ou da nota fiscal.</p>
+      
       <div class="conf-input-wrap">
         <label>📸 Foto do produto ou nota fiscal</label>
         <input type="file" class="conf-input" id="m-photo-input" accept="image/*">
-        <p style="font-size:.7rem;color:#9A7B62;margin-top:.3rem;">Tire uma foto do produto ou da nota fiscal. A imagem não será armazenada - apenas usada para verificação.</p>
+        <p style="font-size:.7rem;color:#9A7B62;margin-top:.3rem;">Tire uma foto do produto ou da nota fiscal. A imagem será enviada para verificação.</p>
       </div>
+      
       <div style="margin-top:1rem;padding:.7rem;background:#e8f5e9;border-radius:8px;font-size:.78rem;color:#2e7d32;border-left:3px solid #2e7d32;">
         🔒 <strong>Sua privacidade é garantida!</strong> A foto será usada apenas para confirmar a compra. Os noivos não saberão quem comprou.
       </div>
+      
       <div style="margin-top:1rem;padding:.7rem;background:#fff3e0;border-radius:8px;font-size:.78rem;color:#e65100;border-left:3px solid #ff9800;">
         ⚠️ Ao confirmar, o contador de itens recebidos será atualizado. Isso ajuda outros convidados a saberem o que ainda falta.
       </div>
+      
       <div class="modal-btns" style="margin-top:1.2rem;">
         <button class="btn-conf" onclick="confirmPurchase()">Confirmar compra ✓</button>
         <button class="btn-canc" onclick="backStep1()">Voltar</button>
@@ -462,6 +467,7 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;}
       <span class="suc-icon">🎁</span>
       <h3 class="suc-title">Presente registrado!</h3>
       <p class="suc-sub">Obrigado pelo carinho! O presente foi adicionado à lista. Sua identidade foi preservada.</p>
+      <p class="suc-sub" style="font-size:.75rem;color:#9A7B62;margin-top:.5rem;">📸 A foto do comprovante foi enviada com sucesso.</p>
       <button class="btn-p" onclick="closeModal()">Fechar</button>
       <br>
       <button class="undo-btn" onclick="undoPurchase()">↩ Desfazer — foi um engano</button>
@@ -629,7 +635,6 @@ async function getGifts() {
     if (gifts && gifts.length > 0) {
       return gifts;
     }
-    // Fallback para dados locais
     console.warn('⚠️ Usando dados locais (fallback)');
     return BASE_GIFTS.map(g => ({
       ...g,
@@ -759,10 +764,14 @@ window.goStep2 = function() {
 
 window.backStep1 = function() { showStep(1); };
 
+// ═══════════════════════════════════════════════════════════════
+// 🔥 FUNÇÃO CONFIRMAR COMPRA - COM UPLOAD PARA SUPABASE STORAGE
+// ═══════════════════════════════════════════════════════════════
 window.confirmPurchase = async function() {
   const photoInput = document.getElementById('m-photo-input');
   const file = photoInput.files[0];
   
+  // 1. Validação da foto
   if (!file) {
     alert('📸 Por favor, tire uma foto do produto ou da nota fiscal para confirmar a compra.');
     return;
@@ -781,21 +790,54 @@ window.confirmPurchase = async function() {
   try {
     const btn = document.querySelector('#ms2 .btn-conf');
     const originalText = btn.textContent;
-    btn.textContent = '🔍 Analisando...';
+    btn.textContent = '📤 Enviando foto...';
     btn.disabled = true;
     
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    // ─── 2. FAZ UPLOAD DA FOTO PARA O SUPABASE STORAGE ───
+    const timestamp = Date.now();
+    const fileExt = file.name.split('.').pop();
+    const fileName = `comprovante_${activeGiftId}_${timestamp}.${fileExt}`;
+    const filePath = `comprovantes/${fileName}`;
+    
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from('comprovantes')
+      .upload(filePath, file);
+    
+    if (uploadError) {
+      console.error('❌ Erro no upload:', uploadError);
+      throw new Error('Erro ao enviar a foto. Tente novamente.');
+    }
+    
+    // ─── 3. PEGA A URL PÚBLICA DA FOTO ───
+    const { data: urlData } = supabase.storage
+      .from('comprovantes')
+      .getPublicUrl(filePath);
+    
+    const photoUrl = urlData.publicUrl;
+    console.log('📸 Foto salva em:', photoUrl);
+    
+    // ─── 4. CONFIRMA A COMPRA ───
+    btn.textContent = '🔍 Analisando...';
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
     const gifts = await getGifts();
     const g = gifts.find(x => x.id === activeGiftId);
     if (!g) throw new Error('Presente não encontrado');
+    
     await db.updateGiftReceived(activeGiftId, g.received + 1);
     lastPurchasedId = activeGiftId;
     renderGifts(currentFilter);
-    showStep(3);
     
+    // ─── 5. MOSTRA SUCESSO ───
+    showStep(3);
     btn.textContent = originalText;
     btn.disabled = false;
+    
+    // Adiciona o link da foto no modal de sucesso
+    const successMsg = document.querySelector('#ms3 .suc-sub:last-child');
+    if (successMsg) {
+      successMsg.innerHTML = `📸 <a href="${photoUrl}" target="_blank" style="color:#4A2E1F;font-weight:bold;">Clique aqui para ver o comprovante enviado</a>`;
+    }
     
   } catch (e) {
     alert('❌ Erro: ' + e.message);
