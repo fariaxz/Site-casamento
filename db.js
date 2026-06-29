@@ -1,8 +1,6 @@
 // db.js
 import { supabase } from './supabase-client.js';
 
-console.log('📦 db.js carregado');
-
 // ─── FAMÍLIAS ───
 export async function getFamilias() {
   try {
