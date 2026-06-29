@@ -353,31 +353,35 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;}
   </div>
 </section>
 
-<!-- RSVP -->
+<!-- RSVP - COM CHECKBOXES POR PESSOA -->
 <section class="rsvp-sec" id="confirmar">
   <div class="rsvp-in">
     <span class="sec-ey">Estamos ansiosos</span>
     <h2 class="sec-ti">Confirmar Presença</h2>
-    <p class="sec-su">Cada família recebeu um código único. Use-o abaixo para confirmar.</p>
+    <p class="sec-su">Cada família recebeu um código único. Use-o abaixo para confirmar quem vai e quem não vai.</p>
     <div class="rsvp-form fade-in">
       <div id="rsvp-s1">
         <label class="fl">Código da Família</label>
-        <!-- 🔥 ÚNICA MUDANÇA: removi o maxlength="6" -->
         <input type="text" class="fi" id="fam-code" placeholder="Ex: FAM001" style="text-transform:uppercase">
         <button class="btn-gold" onclick="lookupFamily()">Buscar minha família →</button>
       </div>
       <div id="rsvp-s2" style="display:none">
         <p style="font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--go);margin-bottom:.9rem">Família identificada</p>
         <h3 id="fam-name" style="font-family:'Cormorant Garamond',serif;font-size:1.55rem;color:var(--ow);margin-bottom:.45rem"></h3>
-        <div id="fam-members" style="margin-bottom:1.3rem"></div>
-        <div class="rsvp-opts">
-          <div class="rsvp-opt" onclick="selRsvp('CONFIRMED',this)"><span class="rsvp-opt-icon">✓</span><p class="rsvp-opt-lbl">Estarei lá!</p></div>
-          <div class="rsvp-opt" onclick="selRsvp('DECLINED',this)"><span class="rsvp-opt-icon">✗</span><p class="rsvp-opt-lbl">Não poderei ir</p></div>
+        
+        <!-- CHECKBOXES POR PESSOA -->
+        <div id="fam-members-container" style="margin-bottom:1.3rem;">
+          <p style="font-size:.75rem;color:rgba(232,220,203,.6);margin-bottom:.5rem;">Marque quem vai comparecer:</p>
+          <div id="fam-members-checkboxes"></div>
         </div>
-        <label class="fl">Adultos confirmados</label>
-        <input type="number" class="fi" id="rsvp-adults" placeholder="0" min="0" max="20">
-        <label class="fl">Crianças</label>
-        <input type="number" class="fi" id="rsvp-kids" placeholder="0" min="0" max="20">
+        
+        <!-- STATUS AUTOMÁTICO -->
+        <div style="background:rgba(255,255,255,.05);border-radius:4px;padding:.7rem .9rem;margin-bottom:1rem;border-left:3px solid var(--go);">
+          <p style="font-size:.75rem;color:rgba(232,220,203,.7);">
+            <span id="rsvp-status-label">📋 Nenhum membro selecionado</span>
+          </p>
+        </div>
+        
         <label class="fl">Restrições alimentares</label>
         <input type="text" class="fi" id="rsvp-diet" placeholder="Ex: vegetariano, sem glúten...">
         <label class="fl">Mensagem para os noivos (opcional)</label>
@@ -387,7 +391,7 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;}
       <div id="rsvp-ok" style="display:none;text-align:center;padding:1.9rem 0">
         <p style="font-size:2.3rem;margin-bottom:.9rem">💌</p>
         <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.55rem;color:var(--ow);margin-bottom:.45rem">Recebemos!</h3>
-        <p style="font-size:.86rem;color:rgba(232,220,203,.7);line-height:1.7">Obrigado por confirmar. Estamos ansiosos para celebrar com você!</p>
+        <p style="font-size:.86rem;color:rgba(232,220,203,.7);line-height:1.7" id="rsvp-confirmation-summary">Obrigado por confirmar!</p>
       </div>
     </div>
   </div>
@@ -424,7 +428,7 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;}
   <p style="font-size:.78rem;color:rgba(232,220,203,.35)">Feito com amor por Luiza & Samuel ✦ 2027</p>
 </footer>
 
-<!-- MODAL PRESENTE -->
+<!-- MODAL PRESENTE - COM FOTO -->
 <div class="modal-ov" id="gift-modal">
   <div class="modal">
     <button class="modal-x" onclick="closeModal()">✕</button>
@@ -440,19 +444,26 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;}
         <button class="btn-canc" onclick="closeModal()">Voltar</button>
       </div>
     </div>
+    <!-- STEP 2: VERIFICAÇÃO COM FOTO -->
     <div class="confirm-step" id="ms2">
       <h3 class="modal-ti">Confirmar compra</h3>
-      <p class="conf-question">Para garantir que o registro é real, por favor confirme onde você comprou o presente:</p>
+      <p class="conf-question">Para confirmar que você realmente comprou o presente, envie uma foto do produto ou da nota fiscal.</p>
+      
       <div class="conf-input-wrap">
-        <label>Nome da loja onde comprou</label>
-        <input type="text" class="conf-input" id="m-store-input" placeholder="Ex: Amazon, Magazine Luiza, Shopee...">
+        <label>📸 Foto do produto ou nota fiscal</label>
+        <input type="file" class="conf-input" id="m-photo-input" accept="image/*">
+        <p style="font-size:.7rem;color:#9A7B62;margin-top:.3rem;">Tire uma foto do produto ou da nota fiscal. A imagem não será armazenada - apenas usada para verificação.</p>
       </div>
-      <div class="conf-input-wrap">
-        <label>Valor aproximado que pagou (R$)</label>
-        <input type="number" class="conf-input" id="m-price-input" placeholder="Ex: 150" min="1">
+      
+      <div style="margin-top:1rem;padding:.7rem;background:#e8f5e9;border-radius:8px;font-size:.78rem;color:#2e7d32;border-left:3px solid #2e7d32;">
+        🔒 <strong>Sua privacidade é garantida!</strong> A foto será usada apenas para confirmar a compra. Os noivos não saberão quem comprou.
       </div>
-      <div class="conf-warning">⚠️ Ao confirmar, o contador de itens recebidos será atualizado. Isso ajuda outros convidados a saberem o que ainda falta.</div>
-      <div class="modal-btns">
+      
+      <div style="margin-top:1rem;padding:.7rem;background:#fff3e0;border-radius:8px;font-size:.78rem;color:#e65100;border-left:3px solid #ff9800;">
+        ⚠️ Ao confirmar, o contador de itens recebidos será atualizado. Isso ajuda outros convidados a saberem o que ainda falta.
+      </div>
+      
+      <div class="modal-btns" style="margin-top:1.2rem;">
         <button class="btn-conf" onclick="confirmPurchase()">Confirmar compra ✓</button>
         <button class="btn-canc" onclick="backStep1()">Voltar</button>
       </div>
@@ -665,19 +676,39 @@ function showStep(n) {
 }
 
 window.goStep2 = function() {
-  document.getElementById('m-store-input').value = '';
-  document.getElementById('m-price-input').value = '';
+  document.getElementById('m-photo-input').value = '';
   showStep(2);
 };
 
 window.backStep1 = function() { showStep(1); };
 
 window.confirmPurchase = async function() {
-  const store = document.getElementById('m-store-input').value.trim();
-  const price = document.getElementById('m-price-input').value.trim();
-  if (!store) { alert('Por favor, informe onde você comprou o presente.'); return; }
-  if (!price || parseFloat(price) < 1) { alert('Por favor, informe o valor aproximado que você pagou.'); return; }
+  const photoInput = document.getElementById('m-photo-input');
+  const file = photoInput.files[0];
+  
+  if (!file) {
+    alert('📸 Por favor, tire uma foto do produto ou da nota fiscal para confirmar a compra.');
+    return;
+  }
+  
+  if (!file.type.startsWith('image/')) {
+    alert('❌ Por favor, envie uma imagem (JPG, PNG, etc).');
+    return;
+  }
+  
+  if (file.size > 10 * 1024 * 1024) {
+    alert('❌ A imagem é muito grande (máx. 10MB). Por favor, reduza o tamanho.');
+    return;
+  }
+  
   try {
+    const btn = document.querySelector('#ms2 .btn-conf');
+    const originalText = btn.textContent;
+    btn.textContent = '🔍 Analisando...';
+    btn.disabled = true;
+    
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
     const gifts = await db.getFullGifts();
     const g = gifts.find(x => x.id === activeGiftId);
     if (!g) throw new Error('Presente não encontrado');
@@ -685,8 +716,15 @@ window.confirmPurchase = async function() {
     lastPurchasedId = activeGiftId;
     renderGifts(currentFilter);
     showStep(3);
+    
+    btn.textContent = originalText;
+    btn.disabled = false;
+    
   } catch (e) {
-    alert('Erro ao confirmar compra: ' + e.message);
+    alert('❌ Erro: ' + e.message);
+    const btn = document.querySelector('#ms2 .btn-conf');
+    btn.textContent = 'Confirmar compra ✓';
+    btn.disabled = false;
   }
 };
 
@@ -701,7 +739,7 @@ window.undoPurchase = async function() {
     renderGifts(currentFilter);
     closeModal();
   } catch (e) {
-    alert('Erro ao desfazer: ' + e.message);
+    alert('Erro: ' + e.message);
   }
 };
 
@@ -713,9 +751,9 @@ document.getElementById('gift-modal').addEventListener('click', e => {
   if (e.target === document.getElementById('gift-modal')) closeModal();
 });
 
-// ─── RSVP ───
-let selRsvpVal = null;
+// ─── RSVP - COM CHECKBOXES ───
 let currentFamilia = null;
+let selectedMembers = [];
 
 window.lookupFamily = async function() {
   const code = document.getElementById('fam-code').value.toUpperCase().trim();
@@ -727,27 +765,47 @@ window.lookupFamily = async function() {
     const rsvp = await db.getRsvp(code);
     
     document.getElementById('fam-name').textContent = fam.name;
-    document.getElementById('fam-members').innerHTML = (fam.members || []).map(m => 
-      `<p style="font-size:.83rem;color:rgba(232,220,203,.7);margin-bottom:.28rem">· ${m}</p>`
-    ).join('');
+    
+    // CRIA OS CHECKBOXES
+    const container = document.getElementById('fam-members-checkboxes');
+    container.innerHTML = '';
+    selectedMembers = [];
+    
+    const savedMembers = rsvp?.members || [];
+    
+    (fam.members || []).forEach((member, index) => {
+      const isChecked = savedMembers.includes(member);
+      const div = document.createElement('div');
+      div.style.cssText = 'display:flex;align-items:center;gap:.7rem;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.05);';
+      
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = 'member-' + index;
+      checkbox.checked = isChecked;
+      checkbox.style.cssText = 'width:18px;height:18px;accent-color:var(--go);cursor:pointer;flex-shrink:0;';
+      checkbox.onchange = function() { updateRsvpStatus(); };
+      
+      const label = document.createElement('label');
+      label.htmlFor = 'member-' + index;
+      label.textContent = member;
+      label.style.cssText = 'color:var(--ow);font-size:.88rem;cursor:pointer;flex:1;';
+      
+      div.appendChild(checkbox);
+      div.appendChild(label);
+      container.appendChild(div);
+      
+      if (isChecked) selectedMembers.push(member);
+    });
     
     if (rsvp) {
-      document.getElementById('rsvp-adults').value = rsvp.adults || 0;
-      document.getElementById('rsvp-kids').value = rsvp.kids || 0;
       document.getElementById('rsvp-diet').value = rsvp.dietary || '';
       document.getElementById('rsvp-msg').value = rsvp.message || '';
-      selRsvpVal = rsvp.status;
-      document.querySelectorAll('.rsvp-opt').forEach((o, i) => {
-        o.classList.toggle('sel', (i === 0 && rsvp.status === 'CONFIRMED') || (i === 1 && rsvp.status === 'DECLINED'));
-      });
     } else {
-      document.getElementById('rsvp-adults').value = 0;
-      document.getElementById('rsvp-kids').value = 0;
       document.getElementById('rsvp-diet').value = '';
       document.getElementById('rsvp-msg').value = '';
-      selRsvpVal = null;
-      document.querySelectorAll('.rsvp-opt').forEach(o => o.classList.remove('sel'));
     }
+    
+    updateRsvpStatus();
     
     document.getElementById('rsvp-s1').style.display = 'none';
     document.getElementById('rsvp-s2').style.display = 'block';
@@ -757,26 +815,84 @@ window.lookupFamily = async function() {
   }
 };
 
-window.selRsvp = function(v, el) {
-  selRsvpVal = v;
-  document.querySelectorAll('.rsvp-opt').forEach(o => o.classList.remove('sel'));
-  el.classList.add('sel');
-};
+function updateRsvpStatus() {
+  const container = document.getElementById('fam-members-checkboxes');
+  const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+  const members = [];
+  checkboxes.forEach((cb) => {
+    const label = container.querySelector(`label[for="${cb.id}"]`);
+    if (cb.checked && label) members.push(label.textContent);
+  });
+  selectedMembers = members;
+  
+  const total = checkboxes.length;
+  const selected = members.length;
+  const statusLabel = document.getElementById('rsvp-status-label');
+  
+  if (selected === 0) {
+    statusLabel.innerHTML = '📋 Nenhum membro selecionado';
+  } else if (selected === total) {
+    statusLabel.innerHTML = `✅ Todos os ${total} membros confirmados! 🎉`;
+  } else {
+    statusLabel.innerHTML = `📋 ${selected} de ${total} membros confirmados`;
+  }
+}
 
 window.submitRsvp = async function() {
-  if (!selRsvpVal) { alert('Por favor, indique se poderá comparecer.'); return; }
+  if (selectedMembers.length === 0) {
+    alert('Por favor, selecione pelo menos um membro da família que vai comparecer.');
+    return;
+  }
   if (!currentFamilia) { alert('Família não identificada.'); return; }
+  
   try {
+    // Conta adultos e crianças automaticamente
+    let adults = 0, kids = 0;
+    selectedMembers.forEach(name => {
+      const lower = name.toLowerCase();
+      if (lower.includes('anos') || lower.includes('criança') || lower.includes('crianca') || 
+          lower.includes('bebê') || lower.includes('bebe') || lower.includes('filho')) {
+        kids++;
+      } else {
+        adults++;
+      }
+    });
+    
+    // Se não conseguiu identificar, assume que todos são adultos
+    if (adults === 0 && kids === 0 && selectedMembers.length > 0) {
+      adults = selectedMembers.length;
+    }
+    
+    const rsvpData = {
+      status: 'CONFIRMED',
+      adults: adults,
+      kids: kids,
+      members: selectedMembers,
+      dietary: document.getElementById('rsvp-diet').value,
+      message: document.getElementById('rsvp-msg').value,
+    };
+    
     await db.upsertRsvp(
       currentFamilia.code,
-      selRsvpVal,
-      parseInt(document.getElementById('rsvp-adults').value) || 0,
-      parseInt(document.getElementById('rsvp-kids').value) || 0,
-      document.getElementById('rsvp-diet').value,
-      document.getElementById('rsvp-msg').value
+      rsvpData.status,
+      rsvpData.adults,
+      rsvpData.kids,
+      rsvpData.dietary,
+      rsvpData.message,
+      rsvpData.members
     );
+    
+    const summary = document.getElementById('rsvp-confirmation-summary');
+    summary.innerHTML = `
+      <strong>${currentFamilia.name}</strong><br>
+      ✅ Confirmados: ${selectedMembers.join(', ')}<br>
+      👤 ${adults} adulto(s) · 🧒 ${kids} criança(s)<br>
+      ${rsvpData.dietary ? `🍽️ Restrições: ${rsvpData.dietary}` : ''}
+    `;
+    
     document.getElementById('rsvp-s2').style.display = 'none';
     document.getElementById('rsvp-ok').style.display = 'block';
+    
   } catch (e) {
     alert('Erro ao confirmar: ' + e.message);
   }
@@ -815,6 +931,7 @@ window.addMessage = async function() {
     await renderMessages();
     document.getElementById('mural-name').value = '';
     document.getElementById('mural-msg').value = '';
+    alert('✅ Mensagem enviada com sucesso!');
   } catch (e) {
     alert('Erro ao enviar mensagem: ' + e.message);
   }
