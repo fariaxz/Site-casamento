@@ -76,6 +76,18 @@ tr:hover td{background:rgba(199,164,108,.03);}
 .member-confirm{background:#E8F5E9;color:#2E7D32;padding:.15rem .5rem;border-radius:12px;font-size:.7rem;border:1px solid #A5D6A7;display:inline-block;margin:.1rem;}
 .member-decline{background:#FFEBEE;color:#C62828;padding:.15rem .5rem;border-radius:12px;font-size:.7rem;border:1px solid #EF9A9A;text-decoration:line-through;display:inline-block;margin:.1rem;}
 
+/* QTY EDITOR */
+.qty-row{display:flex;align-items:center;gap:.5rem;}
+.qty-btn{width:24px;height:24px;border:1px solid var(--bg);background:white;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;color:var(--bd);transition:all .2s;flex-shrink:0;border-radius:4px;}
+.qty-btn:hover{background:var(--bd);color:white;border-color:var(--bd);}
+.qty-val{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--bd);min-width:28px;text-align:center;}
+.qty-input{width:60px;border:1px solid var(--bg);padding:.3rem .5rem;font-size:.82rem;color:var(--bd);text-align:center;outline:none;border-radius:4px;}
+.qty-input:focus{border-color:var(--go);}
+.recv-dec{padding:.3rem .6rem;background:#fff3e0;border:1px solid #ffcc80;color:#e65100;font-size:.7rem;cursor:pointer;border-radius:4px;transition:all .2s;}
+.recv-dec:hover{background:#ffe0b2;}
+.recv-edit-btn{background:transparent;border:1px solid var(--bg);color:var(--tm);font-size:.6rem;padding:.15rem .4rem;border-radius:4px;cursor:pointer;transition:all .2s;}
+.recv-edit-btn:hover{border-color:var(--bd);color:var(--bd);}
+
 /* PROGRESS */
 .pbar{height:4px;background:var(--bg);border-radius:2px;overflow:hidden;min-width:70px;display:inline-block;width:80px;}
 .pfill{height:100%;background:var(--go);}
@@ -91,19 +103,6 @@ tr:hover td{background:rgba(199,164,108,.03);}
 .leg{display:flex;flex-direction:column;gap:.45rem;}
 .leg-item{display:flex;align-items:center;gap:.45rem;font-size:.73rem;color:#5C3D2A;}
 .leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-
-/* QTY EDITOR */
-.qty-row{display:flex;align-items:center;gap:.5rem;}
-.qty-btn{width:24px;height:24px;border:1px solid var(--bg);background:white;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;color:var(--bd);transition:all .2s;flex-shrink:0;border-radius:4px;}
-.qty-btn:hover{background:var(--bd);color:white;border-color:var(--bd);}
-.qty-val{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--bd);min-width:28px;text-align:center;}
-.qty-input{width:52px;border:1px solid var(--bg);padding:.3rem .5rem;font-size:.82rem;color:var(--bd);text-align:center;outline:none;border-radius:4px;}
-.qty-input:focus{border-color:var(--go);}
-
-/* RECV EDITOR */
-.recv-adj{display:flex;align-items:center;gap:.4rem;}
-.recv-dec{padding:.3rem .6rem;background:#fff3e0;border:1px solid #ffcc80;color:#e65100;font-size:.7rem;cursor:pointer;border-radius:4px;transition:all .2s;}
-.recv-dec:hover{background:#ffe0b2;}
 
 /* PAGES */
 .page{display:none;}
@@ -218,7 +217,7 @@ tr:hover td{background:rgba(199,164,108,.03);}
       <div class="tw"><table><thead><tr><th>Item</th><th>Categoria</th><th>Progresso</th><th>Status</th></tr></thead><tbody id="dash-gifts-tbody"><tr><td colspan="4" style="text-align:center;padding:1.5rem;color:#9A7B62;">Carregando...</td></tr></tbody></table></div>
     </div>
 
-    <!-- CONVIDADOS - COM MEMBROS CONFIRMADOS -->
+    <!-- CONVIDADOS -->
     <div class="page" id="page-guests">
       <div class="sh">
         <h2>Famílias cadastradas</h2>
@@ -230,13 +229,17 @@ tr:hover td{background:rgba(199,164,108,.03);}
       <div class="tw"><table><thead><tr><th>Código</th><th>Família</th><th>Membros</th><th>✅ Vão</th><th>❌ Não vão</th><th>Status</th><th>Adultos</th><th>Crianças</th><th>Restrições</th><th>Ações</th></tr></thead><tbody id="guests-tbody"><tr><td colspan="10" style="text-align:center;padding:1.5rem;color:#9A7B62;"><span class="loading-spinner"></span> Carregando...</td></tr></tbody></table></div>
     </div>
 
-    <!-- PRESENTES -->
+    <!-- PRESENTES - COM EDIÇÃO MANUAL DE RECEBIDOS -->
     <div class="page" id="page-gifts">
       <div class="sh">
         <h2>Lista de presentes <span class="saved-badge" id="gifts-saved">✓ Salvo</span></h2>
         <button class="btn-sm" onclick="openModal('modal-add-gift')">+ Adicionar Item</button>
       </div>
-      <p style="font-size:.78rem;color:#9A7B62;margin-bottom:1rem;">Use <strong>± Qtd Pedida</strong> para ajustar quantidades. Use <strong>− Recebido</strong> para corrigir erros de compra. Tudo é salvo automaticamente.</p>
+      <p style="font-size:.78rem;color:#9A7B62;margin-bottom:1rem;">
+        <strong>Qtd Pedida:</strong> Use ± para ajustar | 
+        <strong>Recebido:</strong> Digite o número ou use os botões | 
+        <strong>↺</strong> Zerar recebidos
+      </p>
       <div class="tw"><table><thead><tr><th>Item</th><th>Categoria</th><th>Qtd Pedida</th><th>Recebido</th><th>Progresso</th><th>Lojas</th><th>Ações</th></tr></thead><tbody id="gifts-tbody"><tr><td colspan="7" style="text-align:center;padding:1.5rem;color:#9A7B62;"><span class="loading-spinner"></span> Carregando...</td></tr></tbody></table></div>
     </div>
 
@@ -563,7 +566,7 @@ async function renderDashboard() {
   }
 }
 
-// ─── GUESTS - COM MEMBROS CONFIRMADOS ───
+// ─── GUESTS ───
 async function renderGuests() {
   try {
     const familias = await db.getFamilias();
@@ -573,7 +576,6 @@ async function renderGuests() {
     document.getElementById('guests-tbody').innerHTML = familias.map((f) => {
       const r = rsvps[f.code];
       
-      // Separa membros que vão e não vão
       let membersGoing = [];
       let membersNotGoing = [];
       let allMembers = f.members || [];
@@ -639,7 +641,7 @@ async function renderGuests() {
   }
 }
 
-// ─── GIFTS ───
+// ─── GIFTS - COM EDIÇÃO MANUAL DE RECEBIDOS ───
 async function renderGifts() {
   try {
     const gifts = await db.getFullGifts();
@@ -657,9 +659,11 @@ async function renderGifts() {
           </div>
         </td>
         <td>
-          <div class="recv-adj">
-            <span style="font-family:\'Cormorant Garamond\',serif;font-size:1.1rem;color:var(--bd);" id="recv-${g.id}">${g.received}</span>
-            ${g.received > 0 ? `<button class="recv-dec" onclick="adjRecv(${g.id},-1)">− recebido</button>` : ''}
+          <div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;">
+            <input type="number" class="qty-input" id="recv-input-${g.id}" value="${g.received}" min="0" max="999" style="width:60px;text-align:center;border:1px solid var(--bg);border-radius:4px;padding:.3rem .5rem;font-size:.82rem;color:var(--bd);outline:none;" onchange="updateReceivedManual(${g.id}, this.value)">
+            <span style="font-size:.7rem;color:#9A7B62;">/ ${g.needed}</span>
+            <button class="btn-sm-o" onclick="resetReceived(${g.id})" style="font-size:.55rem;padding:.15rem .4rem;border-radius:4px;" title="Zerar recebidos">↺</button>
+            ${g.received > 0 ? `<button class="recv-dec" onclick="adjRecv(${g.id},-1)" style="padding:.2rem .5rem;font-size:.6rem;">−1</button>` : ''}
           </div>
         </td>
         <td><div style="display:flex;align-items:center;gap:.5rem;"><div class="pbar"><div class="pfill" style="width:${Math.min(pct,100)}%"></div></div><span style="font-size:.7rem;color:#9A7B62;">${pct}%</span></div></td>
@@ -673,6 +677,48 @@ async function renderGifts() {
     document.getElementById('gifts-tbody').innerHTML = `<tr><td colspan="7" style="text-align:center;color:#C62828;padding:1.5rem;">❌ Erro: ${e.message}</td></tr>`;
   }
 }
+
+// ─── EDIÇÃO MANUAL DE RECEBIDOS ───
+window.updateReceivedManual = async function(id, value) {
+  const numValue = parseInt(value);
+  if (isNaN(numValue) || numValue < 0) {
+    showToast('❌ Valor inválido');
+    const gifts = await db.getFullGifts();
+    const g = gifts.find(x => x.id === id);
+    if (g) {
+      const input = document.getElementById('recv-input-' + id);
+      if (input) input.value = g.received;
+    }
+    return;
+  }
+  
+  try {
+    await db.updateGiftReceived(id, numValue);
+    await renderGifts();
+    await renderDashboard();
+    showToast('✓ Quantidade recebida atualizada para ' + numValue);
+  } catch (e) {
+    showToast('❌ Erro: ' + e.message);
+    const gifts = await db.getFullGifts();
+    const g = gifts.find(x => x.id === id);
+    if (g) {
+      const input = document.getElementById('recv-input-' + id);
+      if (input) input.value = g.received;
+    }
+  }
+};
+
+window.resetReceived = async function(id) {
+  if (!confirm('Zerar a quantidade recebida deste item?')) return;
+  try {
+    await db.updateGiftReceived(id, 0);
+    await renderGifts();
+    await renderDashboard();
+    showToast('✓ Quantidade recebida zerada');
+  } catch (e) {
+    showToast('❌ Erro: ' + e.message);
+  }
+};
 
 // ─── MESSAGES ───
 async function renderMessages() {
@@ -731,7 +777,7 @@ window.addFamily = async function() {
   if (!name) { showToast('Informe o nome da família.'); return; }
   try {
     const members = raw.split('\n').filter(Boolean);
-    const familia = await db.addFamilia(code, name, members);
+    await db.addFamilia(code, name, members);
     await renderGuests();
     await renderDashboard();
     closeModal('modal-add-family');
