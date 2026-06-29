@@ -353,7 +353,7 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;}
   </div>
 </section>
 
-<!-- RSVP - COM CHECKBOXES POR PESSOA -->
+<!-- RSVP -->
 <section class="rsvp-sec" id="confirmar">
   <div class="rsvp-in">
     <span class="sec-ey">Estamos ansiosos</span>
@@ -368,20 +368,15 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;}
       <div id="rsvp-s2" style="display:none">
         <p style="font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--go);margin-bottom:.9rem">Família identificada</p>
         <h3 id="fam-name" style="font-family:'Cormorant Garamond',serif;font-size:1.55rem;color:var(--ow);margin-bottom:.45rem"></h3>
-        
-        <!-- CHECKBOXES POR PESSOA -->
         <div id="fam-members-container" style="margin-bottom:1.3rem;">
           <p style="font-size:.75rem;color:rgba(232,220,203,.6);margin-bottom:.5rem;">Marque quem vai comparecer:</p>
           <div id="fam-members-checkboxes"></div>
         </div>
-        
-        <!-- STATUS AUTOMÁTICO -->
         <div style="background:rgba(255,255,255,.05);border-radius:4px;padding:.7rem .9rem;margin-bottom:1rem;border-left:3px solid var(--go);">
           <p style="font-size:.75rem;color:rgba(232,220,203,.7);">
             <span id="rsvp-status-label">📋 Nenhum membro selecionado</span>
           </p>
         </div>
-        
         <label class="fl">Restrições alimentares</label>
         <input type="text" class="fi" id="rsvp-diet" placeholder="Ex: vegetariano, sem glúten...">
         <label class="fl">Mensagem para os noivos (opcional)</label>
@@ -428,7 +423,7 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;}
   <p style="font-size:.78rem;color:rgba(232,220,203,.35)">Feito com amor por Luiza & Samuel ✦ 2027</p>
 </footer>
 
-<!-- MODAL PRESENTE - COM FOTO -->
+<!-- MODAL PRESENTE -->
 <div class="modal-ov" id="gift-modal">
   <div class="modal">
     <button class="modal-x" onclick="closeModal()">✕</button>
@@ -444,25 +439,20 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;}
         <button class="btn-canc" onclick="closeModal()">Voltar</button>
       </div>
     </div>
-    <!-- STEP 2: VERIFICAÇÃO COM FOTO -->
     <div class="confirm-step" id="ms2">
       <h3 class="modal-ti">Confirmar compra</h3>
       <p class="conf-question">Para confirmar que você realmente comprou o presente, envie uma foto do produto ou da nota fiscal.</p>
-      
       <div class="conf-input-wrap">
         <label>📸 Foto do produto ou nota fiscal</label>
         <input type="file" class="conf-input" id="m-photo-input" accept="image/*">
         <p style="font-size:.7rem;color:#9A7B62;margin-top:.3rem;">Tire uma foto do produto ou da nota fiscal. A imagem não será armazenada - apenas usada para verificação.</p>
       </div>
-      
       <div style="margin-top:1rem;padding:.7rem;background:#e8f5e9;border-radius:8px;font-size:.78rem;color:#2e7d32;border-left:3px solid #2e7d32;">
         🔒 <strong>Sua privacidade é garantida!</strong> A foto será usada apenas para confirmar a compra. Os noivos não saberão quem comprou.
       </div>
-      
       <div style="margin-top:1rem;padding:.7rem;background:#fff3e0;border-radius:8px;font-size:.78rem;color:#e65100;border-left:3px solid #ff9800;">
         ⚠️ Ao confirmar, o contador de itens recebidos será atualizado. Isso ajuda outros convidados a saberem o que ainda falta.
       </div>
-      
       <div class="modal-btns" style="margin-top:1.2rem;">
         <button class="btn-conf" onclick="confirmPurchase()">Confirmar compra ✓</button>
         <button class="btn-canc" onclick="backStep1()">Voltar</button>
@@ -569,9 +559,96 @@ let currentFilter = 'todos';
 let activeGiftId = null;
 let lastPurchasedId = null;
 
-async function renderGifts(filter = 'todos') {
+// ─── BASE_GIFTS (FALLBACK) - 52 ITENS ───
+const BASE_GIFTS = [
+  // ELETROS (7)
+  {id:1, name:'Air Fryer', category:'eletros', emoji:'🍳', description:'Para preparar refeições saudáveis com praticidade.', stores:['Amazon','Magazine Luiza','Shopee'], default_qty:1},
+  {id:2, name:'Cafeteira', category:'eletros', emoji:'☕', description:'Manhãs melhores com um bom café a dois.', stores:['Amazon','Mercado Livre'], default_qty:1},
+  {id:3, name:'Liquidificador', category:'eletros', emoji:'🧃', description:'Para vitaminas e sucos no café da manhã.', stores:['Amazon','Casas Bahia'], default_qty:1},
+  {id:4, name:'Batedeira', category:'eletros', emoji:'🎂', description:'Para bolos e receitas especiais.', stores:['Amazon','Magazine Luiza'], default_qty:1},
+  {id:5, name:'Forno Elétrico', category:'eletros', emoji:'🔆', description:'Versátil para assar e gratinar.', stores:['Amazon','Casas Bahia','Magazine Luiza'], default_qty:1},
+  {id:6, name:'Sanduicheira', category:'eletros', emoji:'🥪', description:'Lanches práticos a qualquer hora.', stores:['Shopee','Magazine Luiza'], default_qty:1},
+  {id:7, name:'Mixer', category:'eletros', emoji:'🔄', description:'Para preparar sopas, molhos e vitaminas.', stores:['Amazon','Shopee'], default_qty:1},
+
+  // COZINHA (33)
+  {id:8, name:'Conjunto de Panelas', category:'cozinha', emoji:'🥘', description:'Kit completo para todas as receitas.', stores:['Magazine Luiza','Casas Bahia'], default_qty:1},
+  {id:9, name:'Frigideira', category:'cozinha', emoji:'🍳', description:'Para frituras e preparos no dia a dia.', stores:['Amazon','Casas Bahia'], default_qty:1},
+  {id:10, name:'Assadeiras', category:'cozinha', emoji:'🥧', description:'Para bolos, tortas e assados.', stores:['Amazon','Magazine Luiza'], default_qty:1},
+  {id:11, name:'Formas de Bolo/Pudim', category:'cozinha', emoji:'🧁', description:'Para sobremesas especiais.', stores:['Shopee','Amazon'], default_qty:1},
+  {id:12, name:'Tigelas e Bowls', category:'cozinha', emoji:'🥣', description:'Para servir e preparar alimentos.', stores:['Amazon','Shopee'], default_qty:1},
+  {id:13, name:'Espremedor de Frutas', category:'cozinha', emoji:'🍊', description:'Para sucos naturais.', stores:['Amazon','Magazine Luiza'], default_qty:1},
+  {id:14, name:'Potes Herméticos', category:'cozinha', emoji:'🫙', description:'Para guardar alimentos com praticidade.', stores:['Amazon','Shopee'], default_qty:1},
+  {id:15, name:'Jogo de Copos', category:'cozinha', emoji:'🥤', description:'Para o dia a dia e receber visitas.', stores:['Amazon','Shopee','Magazine Luiza'], default_qty:12},
+  {id:16, name:'Jogo de Taças', category:'cozinha', emoji:'🥂', description:'Para brindar cada momento especial.', stores:['Amazon','Mercado Livre','Shopee'], default_qty:6},
+  {id:17, name:'Jogo de Pratos', category:'cozinha', emoji:'🍽️', description:'Serviço elegante para receber com estilo.', stores:['Amazon','Shopee'], default_qty:12},
+  {id:18, name:'Jogo de Talheres', category:'cozinha', emoji:'🍴', description:'Garfos, facas e colheres para o dia a dia.', stores:['Magazine Luiza','Shopee'], default_qty:1},
+  {id:19, name:'Conjunto de Facas', category:'cozinha', emoji:'🔪', description:'Facas para todos os preparos.', stores:['Amazon','Mercado Livre'], default_qty:1},
+  {id:20, name:'Tábua de Corte', category:'cozinha', emoji:'🪵', description:'Tábua resistente para os preparos.', stores:['Amazon','Shopee'], default_qty:2},
+  {id:21, name:'Colheres de Silicone', category:'cozinha', emoji:'🥄', description:'Para preparos sem riscar as panelas.', stores:['Shopee','Amazon'], default_qty:1},
+  {id:22, name:'Espátula', category:'cozinha', emoji:'🧑‍🍳', description:'Para virar e servir alimentos.', stores:['Shopee','Amazon'], default_qty:1},
+  {id:23, name:'Concha', category:'cozinha', emoji:'🍲', description:'Para servir sopas e caldos.', stores:['Shopee','Mercado Livre'], default_qty:1},
+  {id:24, name:'Escumadeira', category:'cozinha', emoji:'🥄', description:'Para retirar alimentos de líquidos.', stores:['Shopee','Amazon'], default_qty:1},
+  {id:25, name:'Ralador', category:'cozinha', emoji:'🧀', description:'Para ralar queijos, legumes e mais.', stores:['Amazon','Shopee'], default_qty:1},
+  {id:26, name:'Abridor de Latas', category:'cozinha', emoji:'🥫', description:'Prático para abrir latas.', stores:['Shopee','Mercado Livre'], default_qty:1},
+  {id:27, name:'Saca-rolhas', category:'cozinha', emoji:'🍷', description:'Para abrir vinhos e espumantes.', stores:['Amazon','Shopee'], default_qty:1},
+  {id:28, name:'Pano de Prato', category:'cozinha', emoji:'🧺', description:'Para secar e limpar a cozinha.', stores:['Shopee','Magazine Luiza'], default_qty:1},
+  {id:29, name:'Jarra de Suco', category:'cozinha', emoji:'🍹', description:'Jarra elegante para sucos e refrescos.', stores:['Shopee','Magazine Luiza'], default_qty:1},
+  {id:30, name:'Açucareiro', category:'cozinha', emoji:'🍬', description:'Para servir açúcar na mesa.', stores:['Shopee','Amazon'], default_qty:1},
+  {id:31, name:'Pimenteiro e Saleiro', category:'cozinha', emoji:'🧂', description:'Para temperar os pratos na mesa.', stores:['Shopee','Amazon'], default_qty:1},
+  {id:32, name:'Canecas', category:'cozinha', emoji:'☕', description:'Canecas para o cafezinho da manhã.', stores:['Shopee','Mercado Livre'], default_qty:4},
+  {id:33, name:'Jogo Americano', category:'cozinha', emoji:'🏠', description:'Para decorar a mesa com estilo.', stores:['Shopee','Amazon'], default_qty:1},
+  {id:34, name:'Porta Temperos', category:'cozinha', emoji:'🧂', description:'Organizador de temperos.', stores:['Shopee','Magazine Luiza'], default_qty:1},
+  {id:35, name:'Porta Detergente', category:'cozinha', emoji:'🧴', description:'Para organizar a pia.', stores:['Shopee','Amazon'], default_qty:1},
+  {id:36, name:'Porta Esponja', category:'cozinha', emoji:'🧽', description:'Para secar a esponja da pia.', stores:['Shopee','Amazon'], default_qty:1},
+  {id:37, name:'Lixeira Pequena', category:'cozinha', emoji:'🗑️', description:'Lixeira para a cozinha.', stores:['Amazon','Magazine Luiza'], default_qty:1},
+  {id:38, name:'Peneiras', category:'cozinha', emoji:'🥣', description:'Para peneirar farinhas e coar.', stores:['Shopee','Amazon'], default_qty:1},
+  {id:39, name:'Funil', category:'cozinha', emoji:'🔽', description:'Para transferir líquidos.', stores:['Shopee','Mercado Livre'], default_qty:1},
+
+  // QUARTO (7)
+  {id:40, name:'Jogo de Cama', category:'quarto', emoji:'🛏️', description:'Lençóis e fronhas para noites de aconchego.', stores:['Amazon','Magazine Luiza'], default_qty:3},
+  {id:41, name:'Lençol com Elástico', category:'quarto', emoji:'🛏️', description:'Lençol que se ajusta perfeitamente.', stores:['Amazon','Shopee'], default_qty:3},
+  {id:42, name:'Fronhas', category:'quarto', emoji:'🛏️', description:'Fronhas para travesseiros.', stores:['Amazon','Shopee'], default_qty:6},
+  {id:43, name:'Edredom', category:'quarto', emoji:'🛌', description:'Para as noites mais frias.', stores:['Amazon','Shopee','Casas Bahia'], default_qty:2},
+  {id:44, name:'Colcha', category:'quarto', emoji:'🌸', description:'Colcha decorativa para o quarto.', stores:['Amazon','Magazine Luiza'], default_qty:1},
+  {id:45, name:'Cobertores', category:'quarto', emoji:'🧣', description:'Aconchegantes para noites frias.', stores:['Amazon','Shopee'], default_qty:2},
+  {id:46, name:'Travesseiros', category:'quarto', emoji:'💤', description:'Para um sono tranquilo e reparador.', stores:['Amazon','Mercado Livre'], default_qty:4},
+
+  // BANHEIRO (5)
+  {id:47, name:'Toalhas de Banho', category:'banheiro', emoji:'🏊', description:'Kit de toalhas macias e absorventes.', stores:['Amazon','Magazine Luiza','Shopee'], default_qty:8},
+  {id:48, name:'Toalhas de Rosto', category:'banheiro', emoji:'🧖', description:'Kit de toalhas de rosto suaves.', stores:['Amazon','Shopee'], default_qty:4},
+  {id:49, name:'Tapete Antiderrapante', category:'banheiro', emoji:'🪴', description:'Segurança e estilo para o banheiro.', stores:['Amazon','Shopee'], default_qty:2},
+  {id:50, name:'Lixeira de Banheiro', category:'banheiro', emoji:'🗑️', description:'Lixeira compacta para o banheiro.', stores:['Amazon','Magazine Luiza'], default_qty:1},
+  {id:51, name:'Espelho', category:'banheiro', emoji:'🪞', description:'Para compor a decoração do banheiro.', stores:['Shopee','Mercado Livre'], default_qty:1},
+  {id:52, name:'Saboneteira', category:'banheiro', emoji:'🧼', description:'Para organizar o sabonete.', stores:['Shopee','Amazon'], default_qty:1},
+];
+
+// Função para obter presentes (do banco ou fallback)
+async function getGifts() {
   try {
     const gifts = await db.getFullGifts();
+    if (gifts && gifts.length > 0) {
+      return gifts;
+    }
+    // Fallback para dados locais
+    console.warn('⚠️ Usando dados locais (fallback)');
+    return BASE_GIFTS.map(g => ({
+      ...g,
+      needed: g.default_qty || 1,
+      received: 0
+    }));
+  } catch (e) {
+    console.warn('⚠️ Erro ao buscar presentes, usando fallback:', e.message);
+    return BASE_GIFTS.map(g => ({
+      ...g,
+      needed: g.default_qty || 1,
+      received: 0
+    }));
+  }
+}
+
+async function renderGifts(filter = 'todos') {
+  try {
+    const gifts = await getGifts();
     const list = filter === 'todos' ? gifts : gifts.filter(g => g.category === filter);
     const grid = document.getElementById('gifts-grid');
     
@@ -644,7 +721,7 @@ window.openStore = function(name) {
 };
 
 window.openGiftModal = async function(id) {
-  const gifts = await db.getFullGifts();
+  const gifts = await getGifts();
   const g = gifts.find(x => x.id === id);
   if (!g) return;
   activeGiftId = id;
@@ -709,7 +786,7 @@ window.confirmPurchase = async function() {
     
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    const gifts = await db.getFullGifts();
+    const gifts = await getGifts();
     const g = gifts.find(x => x.id === activeGiftId);
     if (!g) throw new Error('Presente não encontrado');
     await db.updateGiftReceived(activeGiftId, g.received + 1);
@@ -731,7 +808,7 @@ window.confirmPurchase = async function() {
 window.undoPurchase = async function() {
   if (!lastPurchasedId) return;
   try {
-    const gifts = await db.getFullGifts();
+    const gifts = await getGifts();
     const g = gifts.find(x => x.id === lastPurchasedId);
     if (!g) return;
     await db.updateGiftReceived(lastPurchasedId, Math.max(0, g.received - 1));
@@ -751,7 +828,7 @@ document.getElementById('gift-modal').addEventListener('click', e => {
   if (e.target === document.getElementById('gift-modal')) closeModal();
 });
 
-// ─── RSVP - COM CHECKBOXES ───
+// ─── RSVP ───
 let currentFamilia = null;
 let selectedMembers = [];
 
@@ -766,7 +843,6 @@ window.lookupFamily = async function() {
     
     document.getElementById('fam-name').textContent = fam.name;
     
-    // CRIA OS CHECKBOXES
     const container = document.getElementById('fam-members-checkboxes');
     container.innerHTML = '';
     selectedMembers = [];
@@ -846,7 +922,6 @@ window.submitRsvp = async function() {
   if (!currentFamilia) { alert('Família não identificada.'); return; }
   
   try {
-    // Conta adultos e crianças automaticamente
     let adults = 0, kids = 0;
     selectedMembers.forEach(name => {
       const lower = name.toLowerCase();
@@ -858,7 +933,6 @@ window.submitRsvp = async function() {
       }
     });
     
-    // Se não conseguiu identificar, assume que todos são adultos
     if (adults === 0 && kids === 0 && selectedMembers.length > 0) {
       adults = selectedMembers.length;
     }
@@ -931,7 +1005,6 @@ window.addMessage = async function() {
     await renderMessages();
     document.getElementById('mural-name').value = '';
     document.getElementById('mural-msg').value = '';
-    alert('✅ Mensagem enviada com sucesso!');
   } catch (e) {
     alert('Erro ao enviar mensagem: ' + e.message);
   }
