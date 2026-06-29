@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-/* ===== ESTILOS COMPLETOS (mesmo do original) ===== */
 :root{--bd:#4A2E1F;--bm:#6F4E37;--bl:#A07855;--bg:#E8DCCB;--ow:#F8F5F0;--go:#C7A46C;--gl:#E8D5B0;--cr:#FBF8F3;--td:#2A1810;--tm:#5C3D2A;--tl:#9A7B62;}
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -57,15 +56,15 @@ section{position:relative;z-index:1;}
 .tl-sec{background:var(--cr);}
 .timeline{position:relative;max-width:780px;margin:0 auto;}
 .timeline::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--go),transparent);transform:translateX(-50%);}
-.tl-item{display:grid;grid-template-columns:1fr 1fr;gap:2.8rem;margin-bottom:3.8rem;position:relative;}
+.tl-item{display:grid;grid-template-columns:1fr 1fr;gap:1.8rem;margin-bottom:3.8rem;position:relative;}
 .tl-item:nth-child(even) .tl-c{order:2;text-align:left;}
 .tl-item:nth-child(even) .tl-img{order:1;}
-.tl-dot{position:absolute;left:50%;top:1.4rem;width:11px;height:11px;background:var(--go);border-radius:50%;transform:translateX(-50%);box-shadow:0 0 0 4px var(--gl);}
+.tl-dot{position:absolute;left:50%;top:1.4rem;width:11px;height:11px;background:var(--go);border-radius:50%;transform:translateX(-50%);box-shadow:0 0 0 4px var(--gl);z-index:2;}
 .tl-c{padding:0 .9rem;}
 .tl-yr{font-size:.63rem;letter-spacing:.2em;color:var(--go);text-transform:uppercase;margin-bottom:.45rem;}
 .tl-h{font-family:'Cormorant Garamond',serif;font-size:1.35rem;color:var(--bd);margin-bottom:.45rem;}
 .tl-t{font-size:.86rem;color:var(--tl);line-height:1.8;}
-.tl-img{background:var(--bg);height:190px;display:flex;align-items:center;justify-content:center;color:var(--tl);font-size:.78rem;font-style:italic;position:relative;overflow:hidden;border-radius:8px;}
+.tl-img{background:var(--bg);height:180px;display:flex;align-items:center;justify-content:center;color:var(--tl);font-size:.78rem;font-style:italic;position:relative;overflow:hidden;border-radius:8px;min-height:120px;}
 .tl-img::after{content:'♥';position:absolute;font-size:2.8rem;color:var(--go);opacity:.18;}
 .verse-sec{background:var(--cr);text-align:center;padding:5.5rem 2rem;}
 .verse-orn{font-family:'Cormorant Garamond',serif;font-size:3.8rem;color:var(--go);opacity:.28;line-height:1;}
@@ -120,11 +119,6 @@ section{position:relative;z-index:1;}
 .fi{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(199,164,108,.2);color:var(--ow);padding:.8rem .95rem;font-family:'Inter',sans-serif;font-size:.88rem;margin-bottom:1.3rem;outline:none;transition:border-color .2s;border-radius:4px;}
 .fi:focus{border-color:var(--go);}
 .fi::placeholder{color:rgba(232,220,203,.3);}
-.rsvp-opts{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:1.3rem;}
-.rsvp-opt{border:1px solid rgba(199,164,108,.2);padding:1.15rem;cursor:pointer;transition:all .2s;text-align:center;border-radius:4px;}
-.rsvp-opt:hover,.rsvp-opt.sel{border-color:var(--go);background:rgba(199,164,108,.1);}
-.rsvp-opt-icon{font-size:1.4rem;margin-bottom:.45rem;display:block;}
-.rsvp-opt-lbl{font-size:.78rem;color:var(--ow);}
 .btn-gold{width:100%;background:var(--go);color:var(--bd);border:none;padding:.95rem;font-size:.76rem;letter-spacing:.15em;text-transform:uppercase;font-weight:500;cursor:pointer;transition:all .2s;margin-top:.45rem;border-radius:4px;}
 .btn-gold:hover{background:var(--gl);}
 .mural-sec{background:var(--ow);}
@@ -143,7 +137,7 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;position:relat
 .foot-div{width:38px;height:1px;background:var(--go);margin:0 auto 1.9rem;opacity:.4;}
 .modal-ov{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem;}
 .modal-ov.active{display:flex;}
-.modal{background:var(--ow);padding:2.3rem;max-width:480px;width:100%;position:relative;animation:slideUp .3s ease;border-radius:8px;}
+.modal{background:var(--ow);padding:2.3rem;max-width:480px;width:100%;position:relative;animation:slideUp .3s ease;border-radius:8px;max-height:90vh;overflow-y:auto;}
 @keyframes slideUp{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
 .modal-x{position:absolute;top:.9rem;right:.9rem;background:none;border:none;cursor:pointer;font-size:1.15rem;color:var(--tl);}
 .modal-ti{font-family:'Cormorant Garamond',serif;font-size:1.55rem;color:var(--bd);margin-bottom:.45rem;}
@@ -161,6 +155,8 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;position:relat
 .conf-input-wrap label{display:block;font-size:.65rem;letter-spacing:.13em;text-transform:uppercase;color:var(--tl);margin-bottom:.4rem;}
 .conf-input{width:100%;border:1px solid var(--bg);padding:.72rem .9rem;font-family:'Inter',sans-serif;font-size:.88rem;color:var(--td);background:white;outline:none;border-radius:4px;}
 .conf-input:focus{border-color:var(--go);}
+.conf-input[type="file"]{padding:.8rem;border:2px dashed var(--bg);cursor:pointer;background:#fafafa;}
+.conf-input[type="file"]:hover{border-color:var(--go);}
 .conf-warning{background:#fff8e6;border-left:2px solid #f0c040;padding:.65rem .9rem;font-size:.78rem;color:#7a5c00;margin-bottom:1.2rem;line-height:1.5;border-radius:4px;}
 .modal-success{display:none;text-align:center;padding:1rem 0;}
 .modal-success.show{display:block;}
@@ -174,18 +170,40 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;position:relat
 .loading-spinner{display:inline-block;width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-radius:50%;border-top-color:#fff;animation:spin .8s ease-in-out infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 #db-status{position:fixed;bottom:1rem;left:1rem;z-index:999;font-size:.6rem;color:var(--tl);background:rgba(255,255,255,.8);padding:.3rem .7rem;border-radius:20px;backdrop-filter:blur(4px);}
+
+/* ===== RESPONSIVO MOBILE ===== */
 @media(max-width:768px){
   .hero{grid-template-columns:1fr;}
-  .hero-img-side{height:260px;}
-  .hero-content{padding:2.5rem 1.4rem;}
+  .hero-img-side{height:200px;}
+  .hero-content{padding:1.8rem 1.2rem;}
   nav .nav-links{display:none;}
-  .timeline::before{display:none;}
-  .tl-item{grid-template-columns:1fr;gap:.9rem;}
-  .tl-item:nth-child(even) .tl-c{order:1;}
-  .tl-item:nth-child(even) .tl-img{order:2;}
+  .cd-grid{gap:1rem;}
   .ev-grid{grid-template-columns:1fr;}
-  .cd-grid{gap:1.3rem;}
-  .rsvp-opts{grid-template-columns:1fr;}
+  .charts-grid{grid-template-columns:1fr;}
+  .stats-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));}
+  .gi-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));}
+  .mural-grid{grid-template-columns:1fr;}
+  .modal{max-width:95%;padding:1.5rem;}
+  .modal-btns{flex-direction:column;}
+  .btn-conf,.btn-canc{flex:auto;width:100%;}
+  
+  /* ===== TIMELINE MOBILE CORRIGIDA ===== */
+  .timeline::before{display:none;}
+  .tl-item{grid-template-columns:1fr;gap:1rem;margin-bottom:2.5rem;border-bottom:1px solid rgba(199,164,108,.1);padding-bottom:1.5rem;}
+  .tl-item:last-child{border-bottom:none;}
+  .tl-item:nth-child(even) .tl-c{order:1;text-align:left;}
+  .tl-item:nth-child(even) .tl-img{order:2;}
+  .tl-dot{position:relative;left:0;transform:none;margin-bottom:.5rem;width:10px;height:10px;display:inline-block;}
+  .tl-c{padding:0;text-align:left!important;}
+  .tl-img{height:140px;min-height:100px;}
+  .tl-h{font-size:1.1rem;}
+  .tl-t{font-size:.8rem;}
+  
+  .sec-in{padding:3rem 1rem;}
+  .sec-ti{font-size:1.6rem;}
+  .sec-su{font-size:.85rem;}
+  .rsvp-form{padding:1.5rem;}
+  .rsvp-in{padding:3rem 1rem;}
 }
 </style>
 </head>
@@ -342,12 +360,12 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;position:relat
   </div>
 </section>
 
-<!-- RSVP -->
+<!-- RSVP - VERSÃO COM CHECKBOXES POR PESSOA -->
 <section class="rsvp-sec" id="confirmar">
   <div class="rsvp-in">
     <span class="sec-ey">Estamos ansiosos</span>
     <h2 class="sec-ti">Confirmar Presença</h2>
-    <p class="sec-su">Cada família recebeu um código único. Use-o abaixo para confirmar.</p>
+    <p class="sec-su">Cada família recebeu um código único. Use-o abaixo para confirmar quem vai e quem não vai.</p>
     <div class="rsvp-form fade-in">
       <div id="rsvp-s1">
         <label class="fl">Código da Família</label>
@@ -357,15 +375,20 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;position:relat
       <div id="rsvp-s2" style="display:none">
         <p style="font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--go);margin-bottom:.9rem">Família identificada</p>
         <h3 id="fam-name" style="font-family:'Cormorant Garamond',serif;font-size:1.55rem;color:var(--ow);margin-bottom:.45rem"></h3>
-        <div id="fam-members" style="margin-bottom:1.3rem"></div>
-        <div class="rsvp-opts">
-          <div class="rsvp-opt" onclick="selRsvp('CONFIRMED',this)"><span class="rsvp-opt-icon">✓</span><p class="rsvp-opt-lbl">Estarei lá!</p></div>
-          <div class="rsvp-opt" onclick="selRsvp('DECLINED',this)"><span class="rsvp-opt-icon">✗</span><p class="rsvp-opt-lbl">Não poderei ir</p></div>
+        
+        <!-- CHECKBOXES POR PESSOA -->
+        <div id="fam-members-container" style="margin-bottom:1.3rem;">
+          <p style="font-size:.75rem;color:rgba(232,220,203,.6);margin-bottom:.5rem;">Marque quem vai comparecer:</p>
+          <div id="fam-members-checkboxes"></div>
         </div>
-        <label class="fl">Adultos confirmados</label>
-        <input type="number" class="fi" id="rsvp-adults" placeholder="0" min="0" max="20">
-        <label class="fl">Crianças</label>
-        <input type="number" class="fi" id="rsvp-kids" placeholder="0" min="0" max="20">
+        
+        <!-- Status automático -->
+        <div style="background:rgba(255,255,255,.05);border-radius:4px;padding:.7rem .9rem;margin-bottom:1rem;border-left:3px solid var(--go);">
+          <p style="font-size:.75rem;color:rgba(232,220,203,.7);">
+            <span id="rsvp-status-label">📋 Nenhum membro selecionado</span>
+          </p>
+        </div>
+        
         <label class="fl">Restrições alimentares</label>
         <input type="text" class="fi" id="rsvp-diet" placeholder="Ex: vegetariano, sem glúten...">
         <label class="fl">Mensagem para os noivos (opcional)</label>
@@ -375,7 +398,7 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;position:relat
       <div id="rsvp-ok" style="display:none;text-align:center;padding:1.9rem 0">
         <p style="font-size:2.3rem;margin-bottom:.9rem">💌</p>
         <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.55rem;color:var(--ow);margin-bottom:.45rem">Recebemos!</h3>
-        <p style="font-size:.86rem;color:rgba(232,220,203,.7);line-height:1.7">Obrigado por confirmar. Estamos ansiosos para celebrar com você!</p>
+        <p style="font-size:.86rem;color:rgba(232,220,203,.7);line-height:1.7" id="rsvp-confirmation-summary">Obrigado por confirmar!</p>
       </div>
     </div>
   </div>
@@ -428,30 +451,38 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;position:relat
         <button class="btn-canc" onclick="closeModal()">Voltar</button>
       </div>
     </div>
-   <!-- Step 2: verificação com foto -->
-<div class="confirm-step" id="ms2">
-  <h3 class="modal-ti">Confirmar compra</h3>
-  <p class="conf-question">Para confirmar que você realmente comprou o presente, envie uma foto do produto ou da nota fiscal.</p>
-  
-  <div class="conf-input-wrap">
-    <label>📸 Foto do produto ou nota fiscal</label>
-    <input type="file" class="conf-input" id="m-photo-input" accept="image/*" capture="environment">
-    <p style="font-size:.7rem;color:#9A7B62;margin-top:.3rem;">Tire uma foto do produto ou da nota fiscal. A imagem não será armazenada - apenas usada para verificação.</p>
-  </div>
-  
-  <div style="margin-top:1rem;padding:.7rem;background:#e8f5e9;border-radius:8px;font-size:.78rem;color:#2e7d32;border-left:3px solid #2e7d32;">
-    🔒 <strong>Sua privacidade é garantida!</strong> A foto será usada apenas para confirmar a compra. Os noivos não saberão quem comprou.
-  </div>
-  
-  <div style="margin-top:1rem;padding:.7rem;background:#fff3e0;border-radius:8px;font-size:.78rem;color:#e65100;border-left:3px solid #ff9800;">
-    ⚠️ Ao confirmar, o contador de itens recebidos será atualizado. Isso ajuda outros convidados a saberem o que ainda falta.
-  </div>
-  
-  <div class="modal-btns" style="margin-top:1.2rem;">
-    <button class="btn-conf" onclick="confirmPurchase()">Confirmar compra ✓</button>
-    <button class="btn-canc" onclick="backStep1()">Voltar</button>
-  </div>
-</div>
+    <!-- STEP 2: VERIFICAÇÃO COM FOTO -->
+    <div class="confirm-step" id="ms2">
+      <h3 class="modal-ti">Confirmar compra</h3>
+      <p class="conf-question">Para confirmar que você realmente comprou o presente, envie uma foto do produto ou da nota fiscal.</p>
+      
+      <div class="conf-input-wrap">
+        <label>📸 Foto do produto ou nota fiscal</label>
+        <input type="file" class="conf-input" id="m-photo-input" accept="image/*" capture="environment">
+        <p style="font-size:.7rem;color:#9A7B62;margin-top:.3rem;">Tire uma foto do produto ou da nota fiscal. A imagem não será armazenada - apenas usada para verificação.</p>
+      </div>
+      
+      <div style="margin-top:1rem;padding:.7rem;background:#e8f5e9;border-radius:8px;font-size:.78rem;color:#2e7d32;border-left:3px solid #2e7d32;">
+        🔒 <strong>Sua privacidade é garantida!</strong> A foto será usada apenas para confirmar a compra. Os noivos não saberão quem comprou.
+      </div>
+      
+      <div style="margin-top:1rem;padding:.7rem;background:#fff3e0;border-radius:8px;font-size:.78rem;color:#e65100;border-left:3px solid #ff9800;">
+        ⚠️ Ao confirmar, o contador de itens recebidos será atualizado. Isso ajuda outros convidados a saberem o que ainda falta.
+      </div>
+      
+      <div class="modal-btns" style="margin-top:1.2rem;">
+        <button class="btn-conf" onclick="confirmPurchase()">Confirmar compra ✓</button>
+        <button class="btn-canc" onclick="backStep1()">Voltar</button>
+      </div>
+    </div>
+    <div class="modal-success" id="ms3">
+      <span class="suc-icon">🎁</span>
+      <h3 class="suc-title">Presente registrado!</h3>
+      <p class="suc-sub">Obrigado pelo carinho! O presente foi adicionado à lista. Sua identidade foi preservada.</p>
+      <button class="btn-p" onclick="closeModal()">Fechar</button>
+      <br>
+      <button class="undo-btn" onclick="undoPurchase()">↩ Desfazer — foi um engano</button>
+    </div>
   </div>
 </div>
 
@@ -468,9 +499,12 @@ import { supabase, testConnection } from './supabase-client.js';
 import * as db from './db.js';
 import { sendNotification } from './email.js';
 
+console.log('🚀 Site iniciando...');
+
 // ─── EXPORTA PARA USO GLOBAL ───
 window.db = db;
 window.supabase = supabase;
+window.sendNotification = sendNotification;
 
 // ─── STATUS DO BANCO ───
 const statusEl = document.getElementById('db-status');
@@ -649,8 +683,7 @@ function showStep(n) {
 }
 
 window.goStep2 = function() {
-  document.getElementById('m-store-input').value = '';
-  document.getElementById('m-price-input').value = '';
+  document.getElementById('m-photo-input').value = '';
   showStep(2);
 };
 
@@ -666,7 +699,7 @@ window.confirmPurchase = async function() {
     return;
   }
   
-  // Verifica se é uma imagem (validação básica)
+  // Verifica se é uma imagem
   if (!file.type.startsWith('image/')) {
     alert('❌ Por favor, envie uma imagem (JPG, PNG, etc).');
     return;
@@ -678,18 +711,17 @@ window.confirmPurchase = async function() {
     return;
   }
   
-  // Simula uma análise da imagem (só para dar sensação de segurança)
-  // Na realidade, não temos como analisar a imagem no front-end
-  // Mas isso já desencoraja envios falsos
   try {
-    // Mostra um indicador de "analisando"
-    document.querySelector('#ms2 .btn-conf').textContent = '🔍 Analisando...';
-    document.querySelector('#ms2 .btn-conf').disabled = true;
+    // Mostra indicador de "analisando"
+    const btn = document.querySelector('#ms2 .btn-conf');
+    const originalText = btn.textContent;
+    btn.textContent = '🔍 Analisando...';
+    btn.disabled = true;
     
-    // Simula uma análise (2 segundos)
+    // Simula uma análise (2 segundos para dar sensação de segurança)
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // Verificação extra: tenta carregar a imagem para ver se é válida
+    // Verifica se a imagem é válida
     const img = new Image();
     const imageUrl = URL.createObjectURL(file);
     
@@ -701,8 +733,7 @@ window.confirmPurchase = async function() {
     
     URL.revokeObjectURL(imageUrl);
     
-    // Se chegou aqui, a imagem é válida
-    // Agora confirma a compra
+    // Confirma a compra
     const gifts = await db.getFullGifts();
     const g = gifts.find(x => x.id === activeGiftId);
     if (!g) throw new Error('Presente não encontrado');
@@ -710,33 +741,29 @@ window.confirmPurchase = async function() {
     lastPurchasedId = activeGiftId;
     renderGifts(currentFilter);
     
-    // Mostra sucesso com opção de desfazer
+    // 📧 Envia e-mail de notificação
+    try {
+      const updatedGifts = await db.getFullGifts();
+      const updatedGift = updatedGifts.find(x => x.id === activeGiftId);
+      if (updatedGift) {
+        await sendNotification('gift', { gift: updatedGift });
+      }
+    } catch (e) {
+      console.warn('E-mail não enviado:', e);
+    }
+    
     showStep(3);
+    
+    // Restaura o botão
+    btn.textContent = originalText;
+    btn.disabled = false;
     
   } catch (e) {
     alert('❌ Não foi possível verificar a imagem. Por favor, tente outra foto.');
     console.error('Erro na verificação:', e);
-  } finally {
-    // Restaura o botão
     const btn = document.querySelector('#ms2 .btn-conf');
     btn.textContent = 'Confirmar compra ✓';
     btn.disabled = false;
-  }
-};
-    
-    // 📧 ADICIONE ESTA PARTE - ENVIA E-MAIL
-    // Busca o presente atualizado
-    const updatedGifts = await db.getFullGifts();
-    const updatedGift = updatedGifts.find(x => x.id === activeGiftId);
-    if (updatedGift) {
-      try {
-        await sendNotification('gift', { gift: updatedGift });
-      } catch (e) {
-        console.warn('E-mail não enviado:', e);
-      }
-    }
-  } catch (e) {
-    alert('Erro ao confirmar compra: ' + e.message);
   }
 };
 
@@ -769,6 +796,7 @@ renderGifts();
 // ─── RSVP ───
 let selRsvpVal = null;
 let currentFamilia = null;
+let selectedMembers = [];
 
 window.lookupFamily = async function() {
   const code = document.getElementById('fam-code').value.toUpperCase().trim();
@@ -780,27 +808,58 @@ window.lookupFamily = async function() {
     const rsvp = await db.getRsvp(code);
     
     document.getElementById('fam-name').textContent = fam.name;
-    document.getElementById('fam-members').innerHTML = (fam.members || []).map(m => 
-      `<p style="font-size:.83rem;color:rgba(232,220,203,.7);margin-bottom:.28rem">· ${m}</p>`
-    ).join('');
     
+    // CRIA OS CHECKBOXES
+    const container = document.getElementById('fam-members-checkboxes');
+    container.innerHTML = '';
+    selectedMembers = [];
+    
+    // Verifica se já tem confirmação salva
+    const savedMembers = rsvp?.members || [];
+    
+    (fam.members || []).forEach((member, index) => {
+      const isChecked = savedMembers.includes(member);
+      const div = document.createElement('div');
+      div.style.cssText = 'display:flex;align-items:center;gap:.7rem;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.05);';
+      
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = 'member-' + index;
+      checkbox.checked = isChecked;
+      checkbox.style.cssText = 'width:18px;height:18px;accent-color:var(--go);cursor:pointer;flex-shrink:0;';
+      checkbox.onchange = function() {
+        updateRsvpStatus();
+      };
+      
+      const label = document.createElement('label');
+      label.htmlFor = 'member-' + index;
+      label.textContent = member;
+      label.style.cssText = 'color:var(--ow);font-size:.88rem;cursor:pointer;flex:1;';
+      
+      div.appendChild(checkbox);
+      div.appendChild(label);
+      container.appendChild(div);
+      
+      if (isChecked) selectedMembers.push(member);
+    });
+    
+    // Carrega dados salvos
     if (rsvp) {
-      document.getElementById('rsvp-adults').value = rsvp.adults || 0;
-      document.getElementById('rsvp-kids').value = rsvp.kids || 0;
       document.getElementById('rsvp-diet').value = rsvp.dietary || '';
       document.getElementById('rsvp-msg').value = rsvp.message || '';
-      selRsvpVal = rsvp.status;
-      document.querySelectorAll('.rsvp-opt').forEach((o, i) => {
-        o.classList.toggle('sel', (i === 0 && rsvp.status === 'CONFIRMED') || (i === 1 && rsvp.status === 'DECLINED'));
+      selectedMembers = rsvp.members || [];
+      // Marca os checkboxes
+      document.querySelectorAll('#fam-members-checkboxes input[type="checkbox"]').forEach((cb, i) => {
+        const member = (fam.members || [])[i];
+        cb.checked = selectedMembers.includes(member);
       });
     } else {
-      document.getElementById('rsvp-adults').value = 0;
-      document.getElementById('rsvp-kids').value = 0;
       document.getElementById('rsvp-diet').value = '';
       document.getElementById('rsvp-msg').value = '';
-      selRsvpVal = null;
-      document.querySelectorAll('.rsvp-opt').forEach(o => o.classList.remove('sel'));
+      selectedMembers = [];
     }
+    
+    updateRsvpStatus();
     
     document.getElementById('rsvp-s1').style.display = 'none';
     document.getElementById('rsvp-s2').style.display = 'block';
@@ -810,21 +869,81 @@ window.lookupFamily = async function() {
   }
 };
 
-window.selRsvp = function(v, el) {
-  selRsvpVal = v;
-  document.querySelectorAll('.rsvp-opt').forEach(o => o.classList.remove('sel'));
-  el.classList.add('sel');
-};
+function updateRsvpStatus() {
+  // Atualiza a lista de membros selecionados
+  const container = document.getElementById('fam-members-checkboxes');
+  const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+  const members = [];
+  checkboxes.forEach((cb) => {
+    const label = container.querySelector(`label[for="${cb.id}"]`);
+    if (cb.checked && label) {
+      members.push(label.textContent);
+    }
+  });
+  selectedMembers = members;
+  
+  // Atualiza o status
+  const total = checkboxes.length;
+  const selected = members.length;
+  const statusLabel = document.getElementById('rsvp-status-label');
+  
+  if (selected === 0) {
+    statusLabel.innerHTML = '📋 Nenhum membro selecionado';
+    statusLabel.style.color = 'rgba(232,220,203,.5)';
+  } else if (selected === total) {
+    statusLabel.innerHTML = `✅ Todos os ${total} membros confirmados! 🎉`;
+    statusLabel.style.color = '#81C784';
+  } else {
+    statusLabel.innerHTML = `📋 ${selected} de ${total} membros confirmados`;
+    statusLabel.style.color = 'rgba(232,220,203,.8)';
+  }
+}
 
 window.submitRsvp = async function() {
-  if (!selRsvpVal) { alert('Por favor, indique se poderá comparecer.'); return; }
+  // Verifica se pelo menos um membro foi selecionado
+  if (selectedMembers.length === 0) {
+    alert('Por favor, selecione pelo menos um membro da família que vai comparecer.');
+    return;
+  }
+  
   if (!currentFamilia) { alert('Família não identificada.'); return; }
+  
   try {
-    // Pega os valores do formulário
+    // Conta adultos e crianças automaticamente
+    let adults = 0, kids = 0;
+    selectedMembers.forEach(name => {
+      const lower = name.toLowerCase();
+      if (lower.includes('anos') || lower.includes('criança') || lower.includes('crianca') || 
+          lower.includes('bebê') || lower.includes('bebe') || lower.includes('filho')) {
+        kids++;
+      } else {
+        adults++;
+      }
+    });
+    
+    // Se não conseguiu identificar, pergunta
+    if (adults === 0 && kids === 0 && selectedMembers.length > 0) {
+      const manual = confirm('Não foi possível identificar automaticamente quem é adulto e quem é criança. Deseja ajustar manualmente?');
+      if (manual) {
+        adults = parseInt(prompt('Quantos adultos?', selectedMembers.length)) || 0;
+        kids = parseInt(prompt('Quantas crianças?', 0)) || 0;
+        const total = selectedMembers.length;
+        if (adults + kids > total) {
+          const diff = total - adults;
+          kids = Math.min(kids, diff);
+        }
+        if (adults + kids > total) adults = total - kids;
+      } else {
+        adults = selectedMembers.length;
+        kids = 0;
+      }
+    }
+    
     const rsvpData = {
-      status: selRsvpVal,
-      adults: parseInt(document.getElementById('rsvp-adults').value) || 0,
-      kids: parseInt(document.getElementById('rsvp-kids').value) || 0,
+      status: 'CONFIRMED',
+      adults: adults,
+      kids: kids,
+      members: selectedMembers,
       dietary: document.getElementById('rsvp-diet').value,
       message: document.getElementById('rsvp-msg').value,
     };
@@ -838,23 +957,36 @@ window.submitRsvp = async function() {
       rsvpData.message
     );
     
+    // Atualiza o resumo
+    const summary = document.getElementById('rsvp-confirmation-summary');
+    summary.innerHTML = `
+      <strong>${currentFamilia.name}</strong><br>
+      ✅ Confirmados: ${selectedMembers.join(', ')}<br>
+      👤 ${adults} adulto(s) · 🧒 ${kids} criança(s)<br>
+      ${rsvpData.dietary ? `🍽️ Restrições: ${rsvpData.dietary}` : ''}
+    `;
+    
     document.getElementById('rsvp-s2').style.display = 'none';
     document.getElementById('rsvp-ok').style.display = 'block';
     
-    // 📧 ADICIONE ESTA PARTE - ENVIA E-MAIL
+    // 📧 Envia e-mail de notificação
     try {
       await sendNotification('rsvp', { 
         familia: currentFamilia, 
-        rsvp: rsvpData
+        rsvp: {
+          ...rsvpData,
+          status: 'CONFIRMED'
+        }
       });
     } catch (e) {
       console.warn('E-mail não enviado:', e);
     }
+    
   } catch (e) {
     alert('Erro ao confirmar: ' + e.message);
   }
 };
-  
+
 // ─── MURAL ───
 async function renderMessages() {
   try {
@@ -884,12 +1016,12 @@ window.addMessage = async function() {
   const msg = document.getElementById('mural-msg').value.trim();
   if (!name || !msg) { alert('Por favor, preencha seu nome e mensagem.'); return; }
   try {
-    const message = await db.addMessage(msg, name);  // ← GUARDA O RETORNO
+    const message = await db.addMessage(msg, name);
     await renderMessages();
     document.getElementById('mural-name').value = '';
     document.getElementById('mural-msg').value = '';
     
-    // 📧 ADICIONE ESTA PARTE - ENVIA E-MAIL
+    // 📧 Envia e-mail de notificação
     try {
       await sendNotification('message', { message });
     } catch (e) {
@@ -900,7 +1032,7 @@ window.addMessage = async function() {
   }
 };
 
-console.log('✅ Site conectado ao Supabase!');
+console.log('✅ Site carregado com sucesso!');
 </script>
 </body>
 </html>
