@@ -199,6 +199,39 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;}
   .rsvp-form{padding:1.5rem;}
   .rsvp-in{padding:3rem 1rem;}
 }
+  /* ─── AJUSTE DA FOTO DO CASAL ─── */
+.hero-img-side img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: relative;
+  z-index: 1;
+}
+
+@media(max-width: 768px) {
+  .hero-img-side {
+    height: 300px; /* Altura da imagem no celular */
+    min-height: 250px;
+  }
+  
+  .hero-img-side img {
+    height: 300px;
+    object-fit: cover;
+    object-position: center 25%; /* Ajuste a % para focar nos rostos */
+  }
+}
+
+@media(max-width: 480px) {
+  .hero-img-side {
+    height: 220px; /* Altura para celulares pequenos */
+  }
+  
+  .hero-img-side img {
+    height: 220px;
+    object-fit: cover;
+    object-position: center 20%;
+  }
+}
 </style>
 </head>
 <body>
