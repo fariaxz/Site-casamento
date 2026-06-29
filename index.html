@@ -657,18 +657,72 @@ window.goStep2 = function() {
 window.backStep1 = function() { showStep(1); };
 
 window.confirmPurchase = async function() {
-  const store = document.getElementById('m-store-input').value.trim();
-  const price = document.getElementById('m-price-input').value.trim();
-  if (!store) { alert('Por favor, informe onde você comprou o presente.'); return; }
-  if (!price || parseFloat(price) < 1) { alert('Por favor, informe o valor aproximado que você pagou.'); return; }
+  const photoInput = document.getElementById('m-photo-input');
+  const file = photoInput.files[0];
+  
+  // Verifica se o usuário enviou uma foto
+  if (!file) {
+    alert('📸 Por favor, tire uma foto do produto ou da nota fiscal para confirmar a compra.');
+    return;
+  }
+  
+  // Verifica se é uma imagem (validação básica)
+  if (!file.type.startsWith('image/')) {
+    alert('❌ Por favor, envie uma imagem (JPG, PNG, etc).');
+    return;
+  }
+  
+  // Verifica o tamanho (máximo 10MB)
+  if (file.size > 10 * 1024 * 1024) {
+    alert('❌ A imagem é muito grande (máx. 10MB). Por favor, reduza o tamanho.');
+    return;
+  }
+  
+  // Simula uma análise da imagem (só para dar sensação de segurança)
+  // Na realidade, não temos como analisar a imagem no front-end
+  // Mas isso já desencoraja envios falsos
   try {
+    // Mostra um indicador de "analisando"
+    document.querySelector('#ms2 .btn-conf').textContent = '🔍 Analisando...';
+    document.querySelector('#ms2 .btn-conf').disabled = true;
+    
+    // Simula uma análise (2 segundos)
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Verificação extra: tenta carregar a imagem para ver se é válida
+    const img = new Image();
+    const imageUrl = URL.createObjectURL(file);
+    
+    await new Promise((resolve, reject) => {
+      img.onload = resolve;
+      img.onerror = reject;
+      img.src = imageUrl;
+    });
+    
+    URL.revokeObjectURL(imageUrl);
+    
+    // Se chegou aqui, a imagem é válida
+    // Agora confirma a compra
     const gifts = await db.getFullGifts();
     const g = gifts.find(x => x.id === activeGiftId);
     if (!g) throw new Error('Presente não encontrado');
     await db.updateGiftReceived(activeGiftId, g.received + 1);
     lastPurchasedId = activeGiftId;
     renderGifts(currentFilter);
+    
+    // Mostra sucesso com opção de desfazer
     showStep(3);
+    
+  } catch (e) {
+    alert('❌ Não foi possível verificar a imagem. Por favor, tente outra foto.');
+    console.error('Erro na verificação:', e);
+  } finally {
+    // Restaura o botão
+    const btn = document.querySelector('#ms2 .btn-conf');
+    btn.textContent = 'Confirmar compra ✓';
+    btn.disabled = false;
+  }
+};
     
     // 📧 ADICIONE ESTA PARTE - ENVIA E-MAIL
     // Busca o presente atualizado
