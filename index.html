@@ -428,31 +428,30 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;position:relat
         <button class="btn-canc" onclick="closeModal()">Voltar</button>
       </div>
     </div>
-    <div class="confirm-step" id="ms2">
-      <h3 class="modal-ti">Confirmar compra</h3>
-      <p class="conf-question">Para garantir que o registro é real, por favor confirme onde você comprou o presente:</p>
-      <div class="conf-input-wrap">
-        <label>Nome da loja onde comprou</label>
-        <input type="text" class="conf-input" id="m-store-input" placeholder="Ex: Amazon, Magazine Luiza, Shopee...">
-      </div>
-      <div class="conf-input-wrap">
-        <label>Valor aproximado que pagou (R$)</label>
-        <input type="number" class="conf-input" id="m-price-input" placeholder="Ex: 150" min="1">
-      </div>
-      <div class="conf-warning">⚠️ Ao confirmar, o contador de itens recebidos será atualizado. Isso ajuda outros convidados a saberem o que ainda falta.</div>
-      <div class="modal-btns">
-        <button class="btn-conf" onclick="confirmPurchase()">Confirmar compra ✓</button>
-        <button class="btn-canc" onclick="backStep1()">Voltar</button>
-      </div>
-    </div>
-    <div class="modal-success" id="ms3">
-      <span class="suc-icon">🎁</span>
-      <h3 class="suc-title">Presente registrado!</h3>
-      <p class="suc-sub">Obrigado pelo carinho! O presente foi adicionado à lista. Sua identidade foi preservada.</p>
-      <button class="btn-p" onclick="closeModal()">Fechar</button>
-      <br>
-      <button class="undo-btn" onclick="undoPurchase()">↩ Desfazer — foi um engano</button>
-    </div>
+   <!-- Step 2: verificação com foto -->
+<div class="confirm-step" id="ms2">
+  <h3 class="modal-ti">Confirmar compra</h3>
+  <p class="conf-question">Para confirmar que você realmente comprou o presente, envie uma foto do produto ou da nota fiscal.</p>
+  
+  <div class="conf-input-wrap">
+    <label>📸 Foto do produto ou nota fiscal</label>
+    <input type="file" class="conf-input" id="m-photo-input" accept="image/*" capture="environment">
+    <p style="font-size:.7rem;color:#9A7B62;margin-top:.3rem;">Tire uma foto do produto ou da nota fiscal. A imagem não será armazenada - apenas usada para verificação.</p>
+  </div>
+  
+  <div style="margin-top:1rem;padding:.7rem;background:#e8f5e9;border-radius:8px;font-size:.78rem;color:#2e7d32;border-left:3px solid #2e7d32;">
+    🔒 <strong>Sua privacidade é garantida!</strong> A foto será usada apenas para confirmar a compra. Os noivos não saberão quem comprou.
+  </div>
+  
+  <div style="margin-top:1rem;padding:.7rem;background:#fff3e0;border-radius:8px;font-size:.78rem;color:#e65100;border-left:3px solid #ff9800;">
+    ⚠️ Ao confirmar, o contador de itens recebidos será atualizado. Isso ajuda outros convidados a saberem o que ainda falta.
+  </div>
+  
+  <div class="modal-btns" style="margin-top:1.2rem;">
+    <button class="btn-conf" onclick="confirmPurchase()">Confirmar compra ✓</button>
+    <button class="btn-canc" onclick="backStep1()">Voltar</button>
+  </div>
+</div>
   </div>
 </div>
 
