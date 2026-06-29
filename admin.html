@@ -71,8 +71,10 @@ td{padding:.72rem .95rem;border-bottom:1px solid rgba(199,164,108,.08);font-size
 tr:hover td{background:rgba(199,164,108,.03);}
 .pill{font-size:.58rem;letter-spacing:.08em;padding:.22rem .58rem;border-radius:20px;text-transform:uppercase;white-space:nowrap;display:inline-block;}
 .pg{background:#E8F5E9;color:#2E7D32;} .pr{background:#FFEBEE;color:#C62828;} .pp{background:var(--bg);color:#5C3D2A;} .pgo{background:rgba(199,164,108,.15);color:var(--bm);}
-.member-conf{color:#2E7D32;font-weight:500;}
-.member-decl{color:#C62828;text-decoration:line-through;}
+
+/* MEMBROS CONFIRMADOS */
+.member-confirm{background:#E8F5E9;color:#2E7D32;padding:.15rem .5rem;border-radius:12px;font-size:.7rem;border:1px solid #A5D6A7;display:inline-block;margin:.1rem;}
+.member-decline{background:#FFEBEE;color:#C62828;padding:.15rem .5rem;border-radius:12px;font-size:.7rem;border:1px solid #EF9A9A;text-decoration:line-through;display:inline-block;margin:.1rem;}
 
 /* PROGRESS */
 .pbar{height:4px;background:var(--bg);border-radius:2px;overflow:hidden;min-width:70px;display:inline-block;width:80px;}
@@ -140,11 +142,6 @@ tr:hover td{background:rgba(199,164,108,.03);}
 
 /* DB STATUS */
 #db-status{position:fixed;bottom:1rem;right:1rem;z-index:999;font-size:.6rem;padding:.3rem .7rem;border-radius:20px;background:rgba(255,255,255,.9);box-shadow:0 2px 8px rgba(0,0,0,.1);}
-
-/* BADGE DE MEMBROS CONFIRMADOS */
-.member-list-confirm{display:flex;flex-wrap:wrap;gap:.3rem;}
-.member-confirm{background:#E8F5E9;color:#2E7D32;padding:.15rem .5rem;border-radius:12px;font-size:.7rem;border:1px solid #A5D6A7;}
-.member-decline{background:#FFEBEE;color:#C62828;padding:.15rem .5rem;border-radius:12px;font-size:.7rem;border:1px solid #EF9A9A;text-decoration:line-through;}
 
 @media(max-width:700px){.sidebar{display:none;}.charts-grid{grid-template-columns:1fr;}.stats-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));}.content{padding:1rem;}}
 </style>
@@ -333,7 +330,7 @@ tr:hover td{background:rgba(199,164,108,.03);}
   <div class="mbox">
     <h3>Nova Família</h3>
     <label class="fl">Código (gerado automaticamente)</label>
-    <input class="fi" type="text" id="nf-code" style="background:#f0ede8;">
+    <input class="fi" type="text" id="nf-code" readonly style="background:#f0ede8;">
     <label class="fl">Nome da família</label>
     <input class="fi" type="text" id="nf-name" placeholder="Família Souza">
     <label class="fl">Membros (um por linha)</label>
@@ -409,14 +406,12 @@ tr:hover td{background:rgba(199,164,108,.03);}
 <script type="module">
 import { supabase, testConnection } from './supabase-client.js';
 import * as db from './db.js';
-import { sendNotification } from './email.js';
 
 console.log('🚀 Admin iniciando...');
 
 // ─── EXPORTA PARA USO GLOBAL ───
 window.db = db;
 window.supabase = supabase;
-window.sendNotification = sendNotification;
 
 // ─── STATUS DO BANCO ───
 const statusEl = document.getElementById('db-status');
@@ -568,7 +563,7 @@ async function renderDashboard() {
   }
 }
 
-// ─── GUESTS - VERSÃO COM MEMBROS CONFIRMADOS ───
+// ─── GUESTS - COM MEMBROS CONFIRMADOS ───
 async function renderGuests() {
   try {
     const familias = await db.getFamilias();
@@ -578,13 +573,12 @@ async function renderGuests() {
     document.getElementById('guests-tbody').innerHTML = familias.map((f) => {
       const r = rsvps[f.code];
       
-      // ===== NOVO: SEPARA MEMBROS QUE VÃO E NÃO VÃO =====
+      // Separa membros que vão e não vão
       let membersGoing = [];
       let membersNotGoing = [];
       let allMembers = f.members || [];
       let confirmedMembers = r?.members || [];
       
-      // Se tem confirmação, separa quem vai e quem não vai
       if (r && r.status === 'CONFIRMED') {
         allMembers.forEach(member => {
           if (confirmedMembers.includes(member)) {
@@ -595,7 +589,6 @@ async function renderGuests() {
         });
       }
       
-      // Monta os membros confirmados visualmente
       let membersGoingHtml = '';
       let membersNotGoingHtml = '';
       
@@ -730,7 +723,7 @@ async function genNextCode() {
     document.getElementById('nf-code').value = 'FAM001';
   }
 }
-  
+
 window.addFamily = async function() {
   const name = document.getElementById('nf-name').value.trim();
   const code = document.getElementById('nf-code').value;
@@ -745,13 +738,6 @@ window.addFamily = async function() {
     document.getElementById('nf-name').value = '';
     document.getElementById('nf-members').value = '';
     showToast('✓ Família ' + name + ' adicionada!');
-    
-    // 📧 Envia e-mail de notificação
-    try {
-      await sendNotification('family', { familia });
-    } catch (e) {
-      console.warn('E-mail não enviado:', e);
-    }
   } catch (e) {
     showToast('Erro: ' + e.message);
   }
