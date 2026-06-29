@@ -15,7 +15,7 @@ body{font-family:'Inter',sans-serif;background:var(--ow);color:var(--td);overflo
 #particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
 .particle{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--go);opacity:0;animation:pfloat linear infinite;}
 @keyframes pfloat{0%{transform:translateY(100vh);opacity:0;}10%{opacity:.35;}90%{opacity:.15;}100%{transform:translateY(-10vh);opacity:0;}}
-nav{position:fixed;top:0;width:100%;z-index:100;padding:1.1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(248,245,240,.93);backdrop-filter:blur(12px);border-bottom:1px solid rgba(199,164,108,.18);transition:all .3s;}
+nav{position:fixed;top:0;width:100%;z-index:100;padding:1.1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(248,245,240,.93);backdrop-filter:blur(12px);border-bottom:1px solid rgba(199,164,108,.18);}
 .nav-mono{font-family:'Cormorant Garamond',serif;font-size:1.45rem;color:var(--bd);letter-spacing:.1em;}
 .nav-links{display:flex;gap:1.8rem;list-style:none;}
 .nav-links a{font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:var(--tm);text-decoration:none;transition:color .2s;}
@@ -40,7 +40,7 @@ nav{position:fixed;top:0;width:100%;z-index:100;padding:1.1rem 2rem;display:flex
 .hero-verse{margin-top:2.5rem;padding:1.4rem;border-left:2px solid var(--go);background:rgba(199,164,108,.06);border-radius:4px;}
 .hero-verse p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.97rem;color:var(--tm);line-height:1.7;}
 .hero-verse cite{font-size:.7rem;letter-spacing:.12em;color:var(--go);text-transform:uppercase;display:block;margin-top:.45rem;}
-.cd-sec{background:var(--bd);padding:5rem 2rem;text-align:center;position:relative;z-index:1;}
+.cd-sec{background:var(--bd);padding:5rem 2rem;text-align:center;}
 .cd-label{font-size:.68rem;letter-spacing:.25em;text-transform:uppercase;color:var(--go);margin-bottom:.9rem;}
 .cd-title{font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:300;color:var(--ow);margin-bottom:2.8rem;}
 .cd-grid{display:flex;justify-content:center;gap:2.8rem;flex-wrap:wrap;}
@@ -69,7 +69,7 @@ section{position:relative;z-index:1;}
 .verse-sec{background:var(--cr);text-align:center;padding:5.5rem 2rem;}
 .verse-orn{font-family:'Cormorant Garamond',serif;font-size:3.8rem;color:var(--go);opacity:.28;line-height:1;}
 .verse-txt{font-family:'Cormorant Garamond',serif;font-size:clamp(1.25rem,2.8vw,1.9rem);font-style:italic;font-weight:300;color:var(--bd);max-width:680px;margin:.9rem auto;line-height:1.6;}
-.verse-ref{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--go);margin-top:.9rem;}
+.verse-ref{font-size:.7rem;letter-spacing:.2em;color:var(--go);text-transform:uppercase;display:block;margin-top:.9rem;}
 .ev-sec{background:var(--ow);}
 .ev-grid{display:grid;grid-template-columns:1fr 1fr;gap:3.8rem;align-items:start;}
 .ev-card{background:white;border:1px solid rgba(199,164,108,.18);padding:2.3rem;margin-bottom:.9rem;border-radius:8px;}
@@ -131,7 +131,7 @@ section{position:relative;z-index:1;}
 .fl-l{display:block;font-size:.66rem;letter-spacing:.15em;text-transform:uppercase;color:var(--tl);margin-bottom:.4rem;}
 .fi-l{width:100%;border:1px solid var(--bg);padding:.8rem .95rem;font-family:'Inter',sans-serif;font-size:.88rem;color:var(--td);background:var(--ow);outline:none;transition:border-color .2s;margin-bottom:.9rem;border-radius:4px;}
 .fi-l:focus{border-color:var(--go);}
-footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;position:relative;z-index:1;}
+footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;}
 .foot-mono{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:300;color:var(--ow);margin-bottom:.4rem;}
 .foot-date{font-size:.7rem;letter-spacing:.25em;color:var(--go);text-transform:uppercase;margin-bottom:1.9rem;}
 .foot-div{width:38px;height:1px;background:var(--go);margin:0 auto 1.9rem;opacity:.4;}
@@ -171,7 +171,6 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;position:relat
 @keyframes spin{to{transform:rotate(360deg);}}
 #db-status{position:fixed;bottom:1rem;left:1rem;z-index:999;font-size:.6rem;color:var(--tl);background:rgba(255,255,255,.8);padding:.3rem .7rem;border-radius:20px;backdrop-filter:blur(4px);}
 
-/* ===== RESPONSIVO MOBILE ===== */
 @media(max-width:768px){
   .hero{grid-template-columns:1fr;}
   .hero-img-side{height:200px;}
@@ -179,15 +178,11 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;position:relat
   nav .nav-links{display:none;}
   .cd-grid{gap:1rem;}
   .ev-grid{grid-template-columns:1fr;}
-  .charts-grid{grid-template-columns:1fr;}
-  .stats-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));}
   .gi-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));}
   .mural-grid{grid-template-columns:1fr;}
   .modal{max-width:95%;padding:1.5rem;}
   .modal-btns{flex-direction:column;}
   .btn-conf,.btn-canc{flex:auto;width:100%;}
-  
-  /* ===== TIMELINE MOBILE CORRIGIDA ===== */
   .timeline::before{display:none;}
   .tl-item{grid-template-columns:1fr;gap:1rem;margin-bottom:2.5rem;border-bottom:1px solid rgba(199,164,108,.1);padding-bottom:1.5rem;}
   .tl-item:last-child{border-bottom:none;}
@@ -198,7 +193,6 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;position:relat
   .tl-img{height:140px;min-height:100px;}
   .tl-h{font-size:1.1rem;}
   .tl-t{font-size:.8rem;}
-  
   .sec-in{padding:3rem 1rem;}
   .sec-ti{font-size:1.6rem;}
   .sec-su{font-size:.85rem;}
@@ -208,9 +202,8 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;position:relat
 </style>
 </head>
 <body>
-<div id="particles"></div>
 
-<!-- Status do Banco -->
+<div id="particles"></div>
 <div id="db-status">🔄 Conectando ao banco...</div>
 
 <nav>
@@ -360,35 +353,31 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;position:relat
   </div>
 </section>
 
-<!-- RSVP - VERSÃO COM CHECKBOXES POR PESSOA -->
+<!-- RSVP -->
 <section class="rsvp-sec" id="confirmar">
   <div class="rsvp-in">
     <span class="sec-ey">Estamos ansiosos</span>
     <h2 class="sec-ti">Confirmar Presença</h2>
-    <p class="sec-su">Cada família recebeu um código único. Use-o abaixo para confirmar quem vai e quem não vai.</p>
+    <p class="sec-su">Cada família recebeu um código único. Use-o abaixo para confirmar.</p>
     <div class="rsvp-form fade-in">
       <div id="rsvp-s1">
         <label class="fl">Código da Família</label>
-       <input type="text" class="fi" id="fam-code" placeholder="Ex: FAM001 ou MEUCODIGO" style="text-transform:uppercase">
+        <!-- 🔥 ÚNICA MUDANÇA: removi o maxlength="6" -->
+        <input type="text" class="fi" id="fam-code" placeholder="Ex: FAM001" style="text-transform:uppercase">
         <button class="btn-gold" onclick="lookupFamily()">Buscar minha família →</button>
       </div>
       <div id="rsvp-s2" style="display:none">
         <p style="font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--go);margin-bottom:.9rem">Família identificada</p>
         <h3 id="fam-name" style="font-family:'Cormorant Garamond',serif;font-size:1.55rem;color:var(--ow);margin-bottom:.45rem"></h3>
-        
-        <!-- CHECKBOXES POR PESSOA -->
-        <div id="fam-members-container" style="margin-bottom:1.3rem;">
-          <p style="font-size:.75rem;color:rgba(232,220,203,.6);margin-bottom:.5rem;">Marque quem vai comparecer:</p>
-          <div id="fam-members-checkboxes"></div>
+        <div id="fam-members" style="margin-bottom:1.3rem"></div>
+        <div class="rsvp-opts">
+          <div class="rsvp-opt" onclick="selRsvp('CONFIRMED',this)"><span class="rsvp-opt-icon">✓</span><p class="rsvp-opt-lbl">Estarei lá!</p></div>
+          <div class="rsvp-opt" onclick="selRsvp('DECLINED',this)"><span class="rsvp-opt-icon">✗</span><p class="rsvp-opt-lbl">Não poderei ir</p></div>
         </div>
-        
-        <!-- Status automático -->
-        <div style="background:rgba(255,255,255,.05);border-radius:4px;padding:.7rem .9rem;margin-bottom:1rem;border-left:3px solid var(--go);">
-          <p style="font-size:.75rem;color:rgba(232,220,203,.7);">
-            <span id="rsvp-status-label">📋 Nenhum membro selecionado</span>
-          </p>
-        </div>
-        
+        <label class="fl">Adultos confirmados</label>
+        <input type="number" class="fi" id="rsvp-adults" placeholder="0" min="0" max="20">
+        <label class="fl">Crianças</label>
+        <input type="number" class="fi" id="rsvp-kids" placeholder="0" min="0" max="20">
         <label class="fl">Restrições alimentares</label>
         <input type="text" class="fi" id="rsvp-diet" placeholder="Ex: vegetariano, sem glúten...">
         <label class="fl">Mensagem para os noivos (opcional)</label>
@@ -398,7 +387,7 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;position:relat
       <div id="rsvp-ok" style="display:none;text-align:center;padding:1.9rem 0">
         <p style="font-size:2.3rem;margin-bottom:.9rem">💌</p>
         <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.55rem;color:var(--ow);margin-bottom:.45rem">Recebemos!</h3>
-        <p style="font-size:.86rem;color:rgba(232,220,203,.7);line-height:1.7" id="rsvp-confirmation-summary">Obrigado por confirmar!</p>
+        <p style="font-size:.86rem;color:rgba(232,220,203,.7);line-height:1.7">Obrigado por confirmar. Estamos ansiosos para celebrar com você!</p>
       </div>
     </div>
   </div>
@@ -451,26 +440,19 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;position:relat
         <button class="btn-canc" onclick="closeModal()">Voltar</button>
       </div>
     </div>
-    <!-- STEP 2: VERIFICAÇÃO COM FOTO -->
     <div class="confirm-step" id="ms2">
       <h3 class="modal-ti">Confirmar compra</h3>
-      <p class="conf-question">Para confirmar que você realmente comprou o presente, envie uma foto do produto ou da nota fiscal.</p>
-      
+      <p class="conf-question">Para garantir que o registro é real, por favor confirme onde você comprou o presente:</p>
       <div class="conf-input-wrap">
-        <label>📸 Foto do produto ou nota fiscal</label>
-        <input type="file" class="conf-input" id="m-photo-input" accept="image/*" capture="environment">
-        <p style="font-size:.7rem;color:#9A7B62;margin-top:.3rem;">Tire uma foto do produto ou da nota fiscal. A imagem não será armazenada - apenas usada para verificação.</p>
+        <label>Nome da loja onde comprou</label>
+        <input type="text" class="conf-input" id="m-store-input" placeholder="Ex: Amazon, Magazine Luiza, Shopee...">
       </div>
-      
-      <div style="margin-top:1rem;padding:.7rem;background:#e8f5e9;border-radius:8px;font-size:.78rem;color:#2e7d32;border-left:3px solid #2e7d32;">
-        🔒 <strong>Sua privacidade é garantida!</strong> A foto será usada apenas para confirmar a compra. Os noivos não saberão quem comprou.
+      <div class="conf-input-wrap">
+        <label>Valor aproximado que pagou (R$)</label>
+        <input type="number" class="conf-input" id="m-price-input" placeholder="Ex: 150" min="1">
       </div>
-      
-      <div style="margin-top:1rem;padding:.7rem;background:#fff3e0;border-radius:8px;font-size:.78rem;color:#e65100;border-left:3px solid #ff9800;">
-        ⚠️ Ao confirmar, o contador de itens recebidos será atualizado. Isso ajuda outros convidados a saberem o que ainda falta.
-      </div>
-      
-      <div class="modal-btns" style="margin-top:1.2rem;">
+      <div class="conf-warning">⚠️ Ao confirmar, o contador de itens recebidos será atualizado. Isso ajuda outros convidados a saberem o que ainda falta.</div>
+      <div class="modal-btns">
         <button class="btn-conf" onclick="confirmPurchase()">Confirmar compra ✓</button>
         <button class="btn-canc" onclick="backStep1()">Voltar</button>
       </div>
@@ -497,35 +479,23 @@ footer{background:var(--bd);padding:3.8rem 2rem;text-align:center;position:relat
 <script type="module">
 import { supabase, testConnection } from './supabase-client.js';
 import * as db from './db.js';
-import { sendNotification } from './email.js';
 
 console.log('🚀 Site iniciando...');
 
 // ─── EXPORTA PARA USO GLOBAL ───
 window.db = db;
 window.supabase = supabase;
-window.sendNotification = sendNotification;
+
 // ─── STATUS DO BANCO ───
 const statusEl = document.getElementById('db-status');
 
-// VERIFICAÇÃO SIMPLES - NUNCA TRAVA
 async function checkDB() {
-  statusEl.textContent = '⏳ Conectando...';
-  statusEl.style.color = '#C7A46C';
-  
-  try {
-    const { data, error } = await supabase.from('familias').select('count').limit(1);
-    if (error) throw error;
-    statusEl.textContent = '✅ Banco conectado';
-    statusEl.style.color = '#4A7C59';
-    return true;
-  } catch (e) {
-    console.warn('⚠️ Banco offline:', e.message);
-    statusEl.textContent = '⚠️ Modo offline (dados locais)';
-    statusEl.style.color = '#C7A46C';
-    return false;
-  }
+  const ok = await testConnection();
+  statusEl.textContent = ok ? '✅ Banco conectado' : '❌ Banco offline';
+  statusEl.style.color = ok ? '#4A7C59' : '#C62828';
+  return ok;
 }
+checkDB();
 
 // ─── PARTICLES ───
 const pc = document.getElementById('particles');
@@ -695,87 +665,28 @@ function showStep(n) {
 }
 
 window.goStep2 = function() {
-  document.getElementById('m-photo-input').value = '';
+  document.getElementById('m-store-input').value = '';
+  document.getElementById('m-price-input').value = '';
   showStep(2);
 };
 
 window.backStep1 = function() { showStep(1); };
 
 window.confirmPurchase = async function() {
-  const photoInput = document.getElementById('m-photo-input');
-  const file = photoInput.files[0];
-  
-  // Verifica se o usuário enviou uma foto
-  if (!file) {
-    alert('📸 Por favor, tire uma foto do produto ou da nota fiscal para confirmar a compra.');
-    return;
-  }
-  
-  // Verifica se é uma imagem
-  if (!file.type.startsWith('image/')) {
-    alert('❌ Por favor, envie uma imagem (JPG, PNG, etc).');
-    return;
-  }
-  
-  // Verifica o tamanho (máximo 10MB)
-  if (file.size > 10 * 1024 * 1024) {
-    alert('❌ A imagem é muito grande (máx. 10MB). Por favor, reduza o tamanho.');
-    return;
-  }
-  
+  const store = document.getElementById('m-store-input').value.trim();
+  const price = document.getElementById('m-price-input').value.trim();
+  if (!store) { alert('Por favor, informe onde você comprou o presente.'); return; }
+  if (!price || parseFloat(price) < 1) { alert('Por favor, informe o valor aproximado que você pagou.'); return; }
   try {
-    // Mostra indicador de "analisando"
-    const btn = document.querySelector('#ms2 .btn-conf');
-    const originalText = btn.textContent;
-    btn.textContent = '🔍 Analisando...';
-    btn.disabled = true;
-    
-    // Simula uma análise (2 segundos para dar sensação de segurança)
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Verifica se a imagem é válida
-    const img = new Image();
-    const imageUrl = URL.createObjectURL(file);
-    
-    await new Promise((resolve, reject) => {
-      img.onload = resolve;
-      img.onerror = reject;
-      img.src = imageUrl;
-    });
-    
-    URL.revokeObjectURL(imageUrl);
-    
-    // Confirma a compra
     const gifts = await db.getFullGifts();
     const g = gifts.find(x => x.id === activeGiftId);
     if (!g) throw new Error('Presente não encontrado');
     await db.updateGiftReceived(activeGiftId, g.received + 1);
     lastPurchasedId = activeGiftId;
     renderGifts(currentFilter);
-    
-    // 📧 Envia e-mail de notificação
-    try {
-      const updatedGifts = await db.getFullGifts();
-      const updatedGift = updatedGifts.find(x => x.id === activeGiftId);
-      if (updatedGift) {
-        await sendNotification('gift', { gift: updatedGift });
-      }
-    } catch (e) {
-      console.warn('E-mail não enviado:', e);
-    }
-    
     showStep(3);
-    
-    // Restaura o botão
-    btn.textContent = originalText;
-    btn.disabled = false;
-    
   } catch (e) {
-    alert('❌ Não foi possível verificar a imagem. Por favor, tente outra foto.');
-    console.error('Erro na verificação:', e);
-    const btn = document.querySelector('#ms2 .btn-conf');
-    btn.textContent = 'Confirmar compra ✓';
-    btn.disabled = false;
+    alert('Erro ao confirmar compra: ' + e.message);
   }
 };
 
@@ -802,90 +713,41 @@ document.getElementById('gift-modal').addEventListener('click', e => {
   if (e.target === document.getElementById('gift-modal')) closeModal();
 });
 
-// Carregar presentes
-renderGifts();
-
 // ─── RSVP ───
 let selRsvpVal = null;
 let currentFamilia = null;
-let selectedMembers = [];
 
 window.lookupFamily = async function() {
   const code = document.getElementById('fam-code').value.toUpperCase().trim();
-  if (!code) { 
-    alert('Por favor, informe o código.'); 
-    return; 
-  }
-  
-  // ⚠️ REMOVA ou AUMENTE essa validação se quiser
-  // if (code.length < 3) {
-  //   alert('O código deve ter pelo menos 3 caracteres.');
-  //   return;
-  // }
-  
+  if (!code) { alert('Por favor, informe o código.'); return; }
   try {
     const fam = await db.getFamiliaByCode(code);
-    if (!fam) { 
-      alert('Código não encontrado. Verifique seu convite.'); 
-      return; 
-    }
-    // ... resto do código
-  } catch (e) {
-    alert('Erro ao buscar família: ' + e.message);
-  }
-};
+    if (!fam) { alert('Código não encontrado. Verifique seu convite.'); return; }
+    currentFamilia = fam;
+    const rsvp = await db.getRsvp(code);
     
-    // CRIA OS CHECKBOXES
-    const container = document.getElementById('fam-members-checkboxes');
-    container.innerHTML = '';
-    selectedMembers = [];
+    document.getElementById('fam-name').textContent = fam.name;
+    document.getElementById('fam-members').innerHTML = (fam.members || []).map(m => 
+      `<p style="font-size:.83rem;color:rgba(232,220,203,.7);margin-bottom:.28rem">· ${m}</p>`
+    ).join('');
     
-    // Verifica se já tem confirmação salva
-    const savedMembers = rsvp?.members || [];
-    
-    (fam.members || []).forEach((member, index) => {
-      const isChecked = savedMembers.includes(member);
-      const div = document.createElement('div');
-      div.style.cssText = 'display:flex;align-items:center;gap:.7rem;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.05);';
-      
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.id = 'member-' + index;
-      checkbox.checked = isChecked;
-      checkbox.style.cssText = 'width:18px;height:18px;accent-color:var(--go);cursor:pointer;flex-shrink:0;';
-      checkbox.onchange = function() {
-        updateRsvpStatus();
-      };
-      
-      const label = document.createElement('label');
-      label.htmlFor = 'member-' + index;
-      label.textContent = member;
-      label.style.cssText = 'color:var(--ow);font-size:.88rem;cursor:pointer;flex:1;';
-      
-      div.appendChild(checkbox);
-      div.appendChild(label);
-      container.appendChild(div);
-      
-      if (isChecked) selectedMembers.push(member);
-    });
-    
-    // Carrega dados salvos
     if (rsvp) {
+      document.getElementById('rsvp-adults').value = rsvp.adults || 0;
+      document.getElementById('rsvp-kids').value = rsvp.kids || 0;
       document.getElementById('rsvp-diet').value = rsvp.dietary || '';
       document.getElementById('rsvp-msg').value = rsvp.message || '';
-      selectedMembers = rsvp.members || [];
-      // Marca os checkboxes
-      document.querySelectorAll('#fam-members-checkboxes input[type="checkbox"]').forEach((cb, i) => {
-        const member = (fam.members || [])[i];
-        cb.checked = selectedMembers.includes(member);
+      selRsvpVal = rsvp.status;
+      document.querySelectorAll('.rsvp-opt').forEach((o, i) => {
+        o.classList.toggle('sel', (i === 0 && rsvp.status === 'CONFIRMED') || (i === 1 && rsvp.status === 'DECLINED'));
       });
     } else {
+      document.getElementById('rsvp-adults').value = 0;
+      document.getElementById('rsvp-kids').value = 0;
       document.getElementById('rsvp-diet').value = '';
       document.getElementById('rsvp-msg').value = '';
-      selectedMembers = [];
+      selRsvpVal = null;
+      document.querySelectorAll('.rsvp-opt').forEach(o => o.classList.remove('sel'));
     }
-    
-    updateRsvpStatus();
     
     document.getElementById('rsvp-s1').style.display = 'none';
     document.getElementById('rsvp-s2').style.display = 'block';
@@ -895,119 +757,26 @@ window.lookupFamily = async function() {
   }
 };
 
-function updateRsvpStatus() {
-  // Atualiza a lista de membros selecionados
-  const container = document.getElementById('fam-members-checkboxes');
-  const checkboxes = container.querySelectorAll('input[type="checkbox"]');
-  const members = [];
-  checkboxes.forEach((cb) => {
-    const label = container.querySelector(`label[for="${cb.id}"]`);
-    if (cb.checked && label) {
-      members.push(label.textContent);
-    }
-  });
-  selectedMembers = members;
-  
-  // Atualiza o status
-  const total = checkboxes.length;
-  const selected = members.length;
-  const statusLabel = document.getElementById('rsvp-status-label');
-  
-  if (selected === 0) {
-    statusLabel.innerHTML = '📋 Nenhum membro selecionado';
-    statusLabel.style.color = 'rgba(232,220,203,.5)';
-  } else if (selected === total) {
-    statusLabel.innerHTML = `✅ Todos os ${total} membros confirmados! 🎉`;
-    statusLabel.style.color = '#81C784';
-  } else {
-    statusLabel.innerHTML = `📋 ${selected} de ${total} membros confirmados`;
-    statusLabel.style.color = 'rgba(232,220,203,.8)';
-  }
-}
+window.selRsvp = function(v, el) {
+  selRsvpVal = v;
+  document.querySelectorAll('.rsvp-opt').forEach(o => o.classList.remove('sel'));
+  el.classList.add('sel');
+};
 
 window.submitRsvp = async function() {
-  // Verifica se pelo menos um membro foi selecionado
-  if (selectedMembers.length === 0) {
-    alert('Por favor, selecione pelo menos um membro da família que vai comparecer.');
-    return;
-  }
-  
+  if (!selRsvpVal) { alert('Por favor, indique se poderá comparecer.'); return; }
   if (!currentFamilia) { alert('Família não identificada.'); return; }
-  
   try {
-    // Conta adultos e crianças automaticamente
-    let adults = 0, kids = 0;
-    selectedMembers.forEach(name => {
-      const lower = name.toLowerCase();
-      if (lower.includes('anos') || lower.includes('criança') || lower.includes('crianca') || 
-          lower.includes('bebê') || lower.includes('bebe') || lower.includes('filho')) {
-        kids++;
-      } else {
-        adults++;
-      }
-    });
-    
-    // Se não conseguiu identificar, pergunta
-    if (adults === 0 && kids === 0 && selectedMembers.length > 0) {
-      const manual = confirm('Não foi possível identificar automaticamente quem é adulto e quem é criança. Deseja ajustar manualmente?');
-      if (manual) {
-        adults = parseInt(prompt('Quantos adultos?', selectedMembers.length)) || 0;
-        kids = parseInt(prompt('Quantas crianças?', 0)) || 0;
-        const total = selectedMembers.length;
-        if (adults + kids > total) {
-          const diff = total - adults;
-          kids = Math.min(kids, diff);
-        }
-        if (adults + kids > total) adults = total - kids;
-      } else {
-        adults = selectedMembers.length;
-        kids = 0;
-      }
-    }
-    
-    const rsvpData = {
-      status: 'CONFIRMED',
-      adults: adults,
-      kids: kids,
-      members: selectedMembers,
-      dietary: document.getElementById('rsvp-diet').value,
-      message: document.getElementById('rsvp-msg').value,
-    };
-    
     await db.upsertRsvp(
       currentFamilia.code,
-      rsvpData.status,
-      rsvpData.adults,
-      rsvpData.kids,
-      rsvpData.dietary,
-      rsvpData.message
+      selRsvpVal,
+      parseInt(document.getElementById('rsvp-adults').value) || 0,
+      parseInt(document.getElementById('rsvp-kids').value) || 0,
+      document.getElementById('rsvp-diet').value,
+      document.getElementById('rsvp-msg').value
     );
-    
-    // Atualiza o resumo
-    const summary = document.getElementById('rsvp-confirmation-summary');
-    summary.innerHTML = `
-      <strong>${currentFamilia.name}</strong><br>
-      ✅ Confirmados: ${selectedMembers.join(', ')}<br>
-      👤 ${adults} adulto(s) · 🧒 ${kids} criança(s)<br>
-      ${rsvpData.dietary ? `🍽️ Restrições: ${rsvpData.dietary}` : ''}
-    `;
-    
     document.getElementById('rsvp-s2').style.display = 'none';
     document.getElementById('rsvp-ok').style.display = 'block';
-    
-    // 📧 Envia e-mail de notificação
-    try {
-      await sendNotification('rsvp', { 
-        familia: currentFamilia, 
-        rsvp: {
-          ...rsvpData,
-          status: 'CONFIRMED'
-        }
-      });
-    } catch (e) {
-      console.warn('E-mail não enviado:', e);
-    }
-    
   } catch (e) {
     alert('Erro ao confirmar: ' + e.message);
   }
@@ -1042,21 +811,17 @@ window.addMessage = async function() {
   const msg = document.getElementById('mural-msg').value.trim();
   if (!name || !msg) { alert('Por favor, preencha seu nome e mensagem.'); return; }
   try {
-    const message = await db.addMessage(msg, name);
+    await db.addMessage(msg, name);
     await renderMessages();
     document.getElementById('mural-name').value = '';
     document.getElementById('mural-msg').value = '';
-    
-    // 📧 Envia e-mail de notificação
-    try {
-      await sendNotification('message', { message });
-    } catch (e) {
-      console.warn('E-mail não enviado:', e);
-    }
   } catch (e) {
     alert('Erro ao enviar mensagem: ' + e.message);
   }
 };
+
+// Carregar presentes
+renderGifts();
 
 console.log('✅ Site carregado com sucesso!');
 </script>
