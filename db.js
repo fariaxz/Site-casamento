@@ -1,6 +1,8 @@
 // db.js
 import { supabase } from './supabase-client.js';
 
+console.log('📦 db.js carregado');
+
 // ─── FAMÍLIAS ───
 export async function getFamilias() {
   try {
@@ -55,7 +57,7 @@ export async function getFamiliaByCode(code) {
   return data;
 }
 
-// ─── RSVPs ───
+// ─── RSVPs (COM MEMBERS) ───
 export async function getRsvps() {
   try {
     const { data, error } = await supabase.from('rsvps').select('*');
@@ -79,14 +81,15 @@ export async function getRsvp(code) {
   return data;
 }
 
-export async function upsertRsvp(family_code, status, adults, kids, dietary, message) {
+export async function upsertRsvp(family_code, status, adults, kids, dietary, message, members) {
   const { data, error } = await supabase
     .from('rsvps')
     .upsert({
       family_code: family_code.toUpperCase(),
-      status,
+      status: status || 'CONFIRMED',
       adults: adults || 0,
       kids: kids || 0,
+      members: members || [],
       dietary: dietary || '',
       message: message || '',
       at: new Date().toISOString()
