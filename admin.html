@@ -333,7 +333,7 @@ tr:hover td{background:rgba(199,164,108,.03);}
   <div class="mbox">
     <h3>Nova Família</h3>
     <label class="fl">Código (gerado automaticamente)</label>
-    <input class="fi" type="text" id="nf-code" readonly style="background:#f0ede8;">
+    <input class="fi" type="text" id="nf-code" style="background:#f0ede8;">
     <label class="fl">Nome da família</label>
     <input class="fi" type="text" id="nf-name" placeholder="Família Souza">
     <label class="fl">Membros (um por linha)</label>
@@ -722,6 +722,7 @@ async function loadContent() {
 async function genNextCode() {
   try {
     const familias = await db.getFamilias();
+    // Se quiser continuar gerando automaticamente
     const max = familias.reduce((m, f) => Math.max(m, parseInt(f.code.replace('FAM', '')) || 0), 0);
     const next = 'FAM' + String(max + 1).padStart(3, '0');
     const el = document.getElementById('nf-code');
@@ -730,7 +731,7 @@ async function genNextCode() {
     document.getElementById('nf-code').value = 'FAM001';
   }
 }
-
+  
 window.addFamily = async function() {
   const name = document.getElementById('nf-name').value.trim();
   const code = document.getElementById('nf-code').value;
