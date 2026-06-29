@@ -85,8 +85,6 @@ tr:hover td{background:rgba(199,164,108,.03);}
 .qty-input:focus{border-color:var(--go);}
 .recv-dec{padding:.3rem .6rem;background:#fff3e0;border:1px solid #ffcc80;color:#e65100;font-size:.7rem;cursor:pointer;border-radius:4px;transition:all .2s;}
 .recv-dec:hover{background:#ffe0b2;}
-.recv-edit-btn{background:transparent;border:1px solid var(--bg);color:var(--tm);font-size:.6rem;padding:.15rem .4rem;border-radius:4px;cursor:pointer;transition:all .2s;}
-.recv-edit-btn:hover{border-color:var(--bd);color:var(--bd);}
 
 /* PROGRESS */
 .pbar{height:4px;background:var(--bg);border-radius:2px;overflow:hidden;min-width:70px;display:inline-block;width:80px;}
@@ -217,7 +215,7 @@ tr:hover td{background:rgba(199,164,108,.03);}
       <div class="tw"><table><thead><tr><th>Item</th><th>Categoria</th><th>Progresso</th><th>Status</th></tr></thead><tbody id="dash-gifts-tbody"><tr><td colspan="4" style="text-align:center;padding:1.5rem;color:#9A7B62;">Carregando...</td></tr></tbody></table></div>
     </div>
 
-    <!-- CONVIDADOS -->
+    <!-- CONVIDADOS - COM BOTÃO DE ALTERAR STATUS -->
     <div class="page" id="page-guests">
       <div class="sh">
         <h2>Famílias cadastradas</h2>
@@ -226,10 +224,14 @@ tr:hover td{background:rgba(199,164,108,.03);}
           <button class="btn-sm" onclick="openModal('modal-add-family')">+ Nova Família</button>
         </div>
       </div>
+      <p style="font-size:.78rem;color:#9A7B62;margin-bottom:1rem;">
+        <strong>✅ Vai:</strong> Clique no botão verde para mudar para "Não vai" | 
+        <strong>❌ Não vai:</strong> Clique no botão vermelho para mudar para "Vai"
+      </p>
       <div class="tw"><table><thead><tr><th>Código</th><th>Família</th><th>Membros</th><th>✅ Vão</th><th>❌ Não vão</th><th>Status</th><th>Adultos</th><th>Crianças</th><th>Restrições</th><th>Ações</th></tr></thead><tbody id="guests-tbody"><tr><td colspan="10" style="text-align:center;padding:1.5rem;color:#9A7B62;"><span class="loading-spinner"></span> Carregando...</td></tr></tbody></table></div>
     </div>
 
-    <!-- PRESENTES - COM EDIÇÃO MANUAL DE RECEBIDOS -->
+    <!-- PRESENTES -->
     <div class="page" id="page-gifts">
       <div class="sh">
         <h2>Lista de presentes <span class="saved-badge" id="gifts-saved">✓ Salvo</span></h2>
@@ -566,16 +568,21 @@ async function renderDashboard() {
   }
 }
 
-// ─── GUESTS ───
+// ─── GUESTS - COM BOTÃO DE ALTERAR STATUS ───
 async function renderGuests() {
   try {
     const familias = await db.getFamilias();
     const rsvps = await db.getRsvps();
-    const stMap = { CONFIRMED: '<span class="pill pg">Confirmado</span>', DECLINED: '<span class="pill pr">Recusou</span>' };
+    const stMap = { 
+      CONFIRMED: '<span class="pill pg">✅ Confirmado</span>', 
+      DECLINED: '<span class="pill pr">❌ Recusou</span>'
+    };
     
     document.getElementById('guests-tbody').innerHTML = familias.map((f) => {
       const r = rsvps[f.code];
+      const currentStatus = r?.status || 'PENDENTE';
       
+      // Separa membros que vão e não vão
       let membersGoing = [];
       let membersNotGoing = [];
       let allMembers = f.members || [];
@@ -600,8 +607,10 @@ async function renderGuests() {
         ).join(' ');
       } else if (r && r.status === 'CONFIRMED') {
         membersGoingHtml = '<span style="color:#9A7B62;font-size:.7rem;">Nenhum</span>';
+      } else if (r && r.status === 'DECLINED') {
+        membersGoingHtml = '<span style="color:#9A7B62;font-size:.7rem;">—</span>';
       } else {
-        membersGoingHtml = '<span style="color:#9A7B62;font-size:.7rem;">Aguardando</span>';
+        membersGoingHtml = '<span style="color:#9A7B62;font-size:.7rem;">⏳ Aguardando</span>';
       }
       
       if (membersNotGoing.length > 0) {
@@ -610,11 +619,26 @@ async function renderGuests() {
         ).join(' ');
       } else if (r && r.status === 'CONFIRMED') {
         membersNotGoingHtml = '<span style="color:#9A7B62;font-size:.7rem;">Todos vão</span>';
+      } else if (r && r.status === 'DECLINED') {
+        membersNotGoingHtml = '<span style="color:#9A7B62;font-size:.7rem;">Todos</span>';
       } else {
         membersNotGoingHtml = '<span style="color:#9A7B62;font-size:.7rem;">—</span>';
       }
       
-      const st = r ? (stMap[r.status] || '') : '<span class="pill pp">Pendente</span>';
+      const st = currentStatus === 'PENDENTE' ? '<span class="pill pp">⏳ Pendente</span>' : (stMap[currentStatus] || '<span class="pill pp">⏳ Pendente</span>');
+      
+      // Cor do botão de status
+      let btnLabel, btnColor;
+      if (currentStatus === 'CONFIRMED') {
+        btnLabel = '❌ Não vai';
+        btnColor = '#c62828';
+      } else if (currentStatus === 'DECLINED') {
+        btnLabel = '✅ Vai';
+        btnColor = '#2E7D32';
+      } else {
+        btnLabel = '✅ Marcar como Vai';
+        btnColor = '#C7A46C';
+      }
       
       return `<tr>
         <td><strong>${f.code}</strong></td>
@@ -628,6 +652,9 @@ async function renderGuests() {
         <td style="font-size:.74rem;">${r?.dietary||'—'}</td>
         <td style="display:flex;gap:.35rem;flex-wrap:wrap;">
           <button class="btn-edit" onclick="editFamily('${f.code}')">✏ Editar</button>
+          <button class="btn-sm" onclick="toggleRsvpStatus('${f.code}')" style="font-size:.55rem;padding:.2rem .6rem;background:${btnColor};color:white;border:none;border-radius:4px;cursor:pointer;white-space:nowrap;">
+            ${btnLabel}
+          </button>
           <button class="btn-danger" onclick="deleteFamily('${f.code}')">✕</button>
         </td>
       </tr>`;
@@ -641,7 +668,77 @@ async function renderGuests() {
   }
 }
 
-// ─── GIFTS - COM EDIÇÃO MANUAL DE RECEBIDOS ───
+// ─── ALTERAR STATUS MANUALMENTE ───
+window.toggleRsvpStatus = async function(code) {
+  try {
+    // Busca a família
+    const familias = await db.getFamilias();
+    const familia = familias.find(f => f.code === code);
+    if (!familia) {
+      showToast('❌ Família não encontrada');
+      return;
+    }
+    
+    // Busca o RSVP atual
+    const rsvp = await db.getRsvp(code);
+    
+    // Determina o novo status
+    const currentStatus = rsvp?.status || 'PENDENTE';
+    let newStatus;
+    let statusText;
+    
+    if (currentStatus === 'CONFIRMED') {
+      newStatus = 'DECLINED';
+      statusText = '❌ Não vai';
+    } else if (currentStatus === 'DECLINED') {
+      newStatus = 'CONFIRMED';
+      statusText = '✅ Vai';
+    } else {
+      // Se estiver pendente, pergunta
+      const choice = confirm(
+        'Esta família ainda não confirmou.\n\n' +
+        'Deseja marcar como:\n' +
+        '✅ "Vai" (Confirmado) - Clique em OK\n' +
+        '❌ "Não vai" (Recusou) - Clique em Cancelar'
+      );
+      newStatus = choice ? 'CONFIRMED' : 'DECLINED';
+      statusText = choice ? '✅ Vai' : '❌ Não vai';
+    }
+    
+    // Confirma a ação
+    const confirmMsg = `Deseja realmente alterar o status da família ${familia.name} para "${statusText}"?`;
+    if (!confirm(confirmMsg)) return;
+    
+    // Pega os dados atuais (se existirem)
+    const adults = rsvp?.adults || 0;
+    const kids = rsvp?.kids || 0;
+    const members = rsvp?.members || familia.members || [];
+    const dietary = rsvp?.dietary || '';
+    const message = rsvp?.message || '';
+    
+    // Salva o novo status
+    await db.upsertRsvp(
+      code,
+      newStatus,
+      adults,
+      kids,
+      dietary,
+      message,
+      members
+    );
+    
+    // Recarrega a lista
+    await renderGuests();
+    await renderDashboard();
+    showToast(`✓ Status alterado para "${statusText}" - ${familia.name}`);
+    
+  } catch (e) {
+    console.error('❌ Erro ao alterar status:', e);
+    showToast('❌ Erro: ' + e.message);
+  }
+};
+
+// ─── GIFTS ───
 async function renderGifts() {
   try {
     const gifts = await db.getFullGifts();
